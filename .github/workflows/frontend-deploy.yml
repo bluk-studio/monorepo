@@ -11,12 +11,6 @@ jobs:
     if: "contains(github.event.head_commit.message, 'web:')"
     steps:
     - uses: actions/checkout@v2
-    # - name: Copy shared package into web production folder
-    #   run: cp -a ./backend/api/libs/shared/. ./frontend/web/production/shared
-
-    # - name: Copy production configs into web root folder
-    #   run: cp -a ./frontend/web/production/* ./frontend/web
-
     - name: Deploy application to Vercel
       uses: amondnet/vercel-action@v20
       with:
