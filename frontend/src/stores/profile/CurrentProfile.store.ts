@@ -6,7 +6,7 @@ import type { ILoginMutationResponse } from 'src/queries';
 import type { IFetchMeData } from 'src/queries';
 import { LoginMutation, FetchMe } from 'src/queries';
 
-import { client } from 'src/stores';
+import { client } from 'src/stores/graphql';
 
 // Exporting ICurrentProfile store interface
 export interface ICurrentProfile {
@@ -16,8 +16,9 @@ export interface ICurrentProfile {
 
 // Function to initialize CurrentUser store
 function _initialize() {
-  const defaultStore: Partial<ICurrentProfile> = {
+  const defaultStore: ICurrentProfile = {
     loggedIn: false,
+    profile: {}
   };
   const { subscribe, update } = writable(defaultStore);
 

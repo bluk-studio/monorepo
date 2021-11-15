@@ -4,7 +4,8 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   
-  import { CurrentProfile, ICurrentProfile } from 'src/stores';
+  import { CurrentProfile } from 'src/stores';
+  import type { ICurrentProfile } from '@app/shared';
 
   onMount(async () => {
     // Checking if current page

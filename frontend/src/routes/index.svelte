@@ -1,4 +1,6 @@
 <script lang="ts">
+import { goto } from '$app/navigation';
+
   // Importing modules
   import { SimpleIcon } from 'src/design';
 </script>
@@ -37,7 +39,9 @@
     <!-- Right panel -->
     <div class="flex items-center">
       <!-- Login button -->
-      <button class="px-6 py-1.5 bg-black border-2 border-black rounded-sm mx-4">
+      <button on:click={() => {
+        goto('/app');
+      }} class="px-6 py-1.5 bg-black border-2 border-black rounded-sm mx-4">
         <p class="text-white text-sm">Войти</p>
       </button>
 
