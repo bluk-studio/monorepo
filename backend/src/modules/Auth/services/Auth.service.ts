@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { request, gql } from 'graphql-request';
-import { IProfile } from '@app/shared';
 import { ProfileService } from 'src/modules/Profile/services';
+import { Profile } from 'src/types';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +12,7 @@ export class AuthService {
   // cloud.odzi.dog api, find account
   // with provided user email (create if
   // not found) and return it.
-  public async authorize(token?: string): Promise<IProfile | null> {
+  public async authorize(token?: string): Promise<Profile | null> {
     // Making request to external api
     const query = gql`
       query FetchToken($token: String!) {

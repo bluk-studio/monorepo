@@ -15,7 +15,7 @@ export class ProjectObject implements IProject {
   name: string;
 
   @Field({ nullable: true, description: 'Optional project description' })
-  description: string;
+  description?: string;
 
   @Field((type) => [ProjectMemberObject], {
     nullable: false,

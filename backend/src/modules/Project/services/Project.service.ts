@@ -29,6 +29,17 @@ export class ProjectService {
   }
 
   // public fetchProfileProjects
+  public async fetchProfileProjects(
+    profileId: string | Types.ObjectId,
+  ): Promise<Array<Project>> {
+    const _profileId =
+      profileId instanceof Types.ObjectId
+        ? profileId
+        : new Types.ObjectId(profileId);
+
+    // Fetching projects
+    return await this.projectModel.find({ 'members.uid': _profileId });
+  }
 
   // public fetchMembers
   public async fetchMembers(projectId: string): Promise<Array<ProjectMember>> {

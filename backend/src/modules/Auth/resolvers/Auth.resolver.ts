@@ -25,7 +25,7 @@ export class AuthResolver {
     // Saving this profile's uuid into
     // our session object.
     req.session.token = token;
-    req.session.lastAuthorizedUser = profile;
+    req.session.lastAuthorizedUser = String(profile._id);
     return profile;
   }
 }

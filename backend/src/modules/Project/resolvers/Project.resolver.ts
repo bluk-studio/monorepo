@@ -31,6 +31,18 @@ export class ProjectResolver {
     return this.projectService.fetchById(projectId);
   }
 
+  // query profileProjects
+  @UseGuards(UserAuthGuard)
+  @Query((type) => [ProjectObject], {
+    name: 'ProfileProjects',
+    description: "Fetch all ProjectObject's of a current profile",
+  })
+  public async queryProfileProjects(
+    @Context('user') user: Profile,
+  ): Promise<Array<ProjectObject>> {
+    return await this.projectService.fetchProfileProjects(user._id);
+  }
+
   // mutation CreateProject
   @UseGuards(UserAuthGuard)
   @Mutation((returns) => ProjectObject, {
