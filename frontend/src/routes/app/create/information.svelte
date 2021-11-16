@@ -14,8 +14,8 @@
   let descriptionProperty = NamedProjectProperties.find((x) => x.id == 'description');
 
   function next() {
-    // Next - members page
-    goto('/app/create/members');
+    // Next - finish page
+    goto('/app/create/finish');
   };
 </script>
 

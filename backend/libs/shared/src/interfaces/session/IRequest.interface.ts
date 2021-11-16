@@ -4,5 +4,5 @@ import { ISessionContext } from '.';
 
 // Exporting IRequest interface
 export interface IRequest extends Request {
-  session: ISessionContext & Session,
-};
+  session: ISessionContext & Session;
+}

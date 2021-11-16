@@ -3,17 +3,25 @@
   import { CreateProjectStore } from 'src/stores';
   import { NamedProjectProperties } from 'src/config/project';
   import { ProjectPlans } from 'src/config/project';
+  import { goto } from '$app/navigation';
 
   import { SimpleIcon } from 'src/design';
-import { goto } from '$app/navigation';
-import { identity } from 'svelte/internal';
 
   // Variables
   $: plan = ProjectPlans.filter((x) => x.id == $CreateProjectStore.plan)[0];
+
+  // function, that'll create new project
+  function create() {
+    // Preparing options object
+
+    // Sending mutation to GraphQL server
+
+    // Processing response
+  };
 </script>
 
 <!-- Finish Page Layout -->
-<div class="w-full flex flex-wrap px-6 relative items-stretch">
+<div class="w-full flex flex-wrap px-4 relative items-stretch">
   { #each NamedProjectProperties as property }
     <div class="w-full p-4 bg-gray-100 rounded-sm m-2">
       <div class="flex items-center">
@@ -107,4 +115,15 @@ import { identity } from 'svelte/internal';
       </div>
     </div>
   { /each }
+
+  <!-- Create Server Button -->
+  <div class="w-full mt-8 px-2">
+    <button on:click={() => {
+      create();
+    }} class="w-full px-2 py-1.5 bg-black rounded-sm flex items-center justify-center">
+      <p class="text-white text-sm mr-2">Создать сервер</p>
+
+      <SimpleIcon name="chevron-right" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
+    </button>
+  </div>
 </div>

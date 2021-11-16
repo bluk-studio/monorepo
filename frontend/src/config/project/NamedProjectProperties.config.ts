@@ -48,13 +48,13 @@ export const NamedProjectProperties: NamedProjectProperty[] = [
   },
 
   // Members
-  {
-    id: 'members',
-    pageId: 'members',
-    required: false,
+  // {
+  //   id: 'members',
+  //   pageId: 'members',
+  //   required: false,
 
-    icon: 'user',
-    title: 'Другие участники',
-    description: 'Ваши друзья, которых вы пригласили и которые получают доступ к серверу.',
-  }
+  //   icon: 'user',
+  //   title: 'Другие участники',
+  //   description: 'Ваши друзья, которых вы пригласили и которые получают доступ к серверу.',
+  // }
 ];

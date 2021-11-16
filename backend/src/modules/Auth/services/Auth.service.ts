@@ -5,9 +5,7 @@ import { ProfileService } from 'src/modules/Profile/services';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly profileService: ProfileService,
-  ) {}
+  constructor(private readonly profileService: ProfileService) {}
 
   // public authorize
   // - Fetch token information from
@@ -26,10 +24,18 @@ export class AuthService {
       }
     `;
 
-    if (!token) throw new HttpException('Invalid or missing profile token', HttpStatus.UNAUTHORIZED);
+    if (!token)
+      throw new HttpException(
+        'Invalid or missing profile token',
+        HttpStatus.UNAUTHORIZED,
+      );
 
-    const response = await request('https://api.cloud.odzi.dog/graphql', query, { token });
-    const email = response?.fetchToken?.profile?.email
+    const response = await request(
+      'https://api.cloud.odzi.dog/graphql',
+      query,
+      { token },
+    );
+    const email = response?.fetchToken?.profile?.email;
 
     // Let's now check if we have this user
     // in our database
@@ -37,8 +43,8 @@ export class AuthService {
     if (profile == null) {
       // Creating new profile
       profile = await this.profileService.create(email);
-    };
+    }
 
     return profile ?? null;
-  };
-};
+  }
+}

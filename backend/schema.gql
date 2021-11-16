@@ -8,10 +8,69 @@ type Profile {
   username: String
 }
 
+type Project {
+  """Unique project's id"""
+  _id: String!
+
+  """Non-unique project name"""
+  name: String!
+
+  """Optional project description"""
+  description: String
+  members: [ProjectMember!]!
+}
+
+type MemberPermission {
+  """ProjectMember instance of a person who added this permission"""
+  issuer: ProjectMember!
+
+  """Permission enumerable"""
+  permission: Permission!
+}
+
+enum Permission {
+  START
+  STOP
+}
+
+type MemberPermissions {
+  """Unix date when last changes were made"""
+  lastModified: Float
+
+  """Set of MemberPermission objects"""
+  list: [MemberPermission!]
+}
+
+type ProjectMember {
+  """Unique ProjectMember instance id"""
+  _id: String!
+  profile: Profile!
+
+  """Member's role"""
+  role: MemberRole!
+  permissions: MemberPermissions!
+}
+
+enum MemberRole {
+  OWNER
+  DEVELOPER
+}
+
 type Query {
   me: Profile!
+
+  """Get Project instance from Project's id"""
+  Project(projectId: String!): Project!
 }
 
 type Mutation {
   login(token: String!): Profile!
+
+  """Create new project using data passed into CreateProjectInput"""
+  CreateProject(input: CreateProjectInput!): Project!
+}
+
+input CreateProjectInput {
+  name: String!
+  description: String
 }

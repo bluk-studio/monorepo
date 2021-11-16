@@ -26,12 +26,12 @@ export const CreateProjectPages: CreateProjectPage[] = [
   },
 
   // Members
-  {
-    id: 'members',
+  // {
+  //   id: 'members',
 
-    title: 'Пригласите друзей',
-    description: '3. Хотите разрабатывать этот сервер вместе с друзьями?',
-  },
+  //   title: 'Пригласите друзей',
+  //   description: '3. Хотите разрабатывать этот сервер вместе с друзьями?',
+  // },
 
   // Finish stage
   {

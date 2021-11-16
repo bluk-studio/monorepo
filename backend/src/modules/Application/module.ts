@@ -5,6 +5,9 @@ import { GraphQLModule } from '@nestjs/graphql';
 
 import * as GlobalModules from 'src/bootstrap/GlobalModules.array';
 
+// Importing GraphQL enums
+import 'src/types/enums';
+
 @Module({
   imports: [
     // ConfigModule
@@ -28,6 +31,6 @@ import * as GlobalModules from 'src/bootstrap/GlobalModules.array';
 
     // Application modules
     ...Object.values(GlobalModules),
-  ]
+  ],
 })
 export class ApplicationModule {}

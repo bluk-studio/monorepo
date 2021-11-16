@@ -13,6 +13,6 @@ export class Profile implements IProfile {
 
   @Prop({ required: false, unique: false })
   username?: string;
-};
+}
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile);
