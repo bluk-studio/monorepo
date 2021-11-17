@@ -5,25 +5,43 @@
   import { ProjectPlans } from 'src/config/project';
   import { goto } from '$app/navigation';
 
-  import { SimpleIcon } from 'src/design';
+  import { RadialSpinner, SimpleIcon } from 'src/design';
 
   // Variables
   $: plan = ProjectPlans.filter((x) => x.id == $CreateProjectStore.plan)[0];
+  let loading = false;
 
   // function, that'll create new project
-  function create() {
-    // Preparing options object
+  async function create() {
+    // Checking properties
+    const missingProperties = NamedProjectProperties.filter((property) => {
+      if (!$CreateProjectStore[property.id] && property.required) {
+        return property;
+      };
+    });
 
-    // Sending mutation to GraphQL server
+    if (missingProperties.length <= 0) {
+      loading = true;
 
-    // Processing response
+      // Creating project and redirecting user
+      const { _id } = await CreateProjectStore.create(); 
+      
+      // Processing response
+      goto(`/app/${ _id }`);
+    };
   };
 </script>
 
 <!-- Finish Page Layout -->
 <div class="w-full flex flex-wrap px-4 relative items-stretch">
   { #each NamedProjectProperties as property }
-    <div class="w-full p-4 bg-gray-100 rounded-sm m-2">
+    <div class="w-full p-4 bg-gray-100 rounded-sm m-2 relative">
+      <!-- Loading overlay -->
+      { #if loading }
+        <div class="absolute z-50 inset-0 w-full h-full bg-black bg-opacity-40">
+        </div>
+      { /if }
+
       <div class="flex items-center">
         <!-- Icon -->
         { #if property.icon }
@@ -119,11 +137,19 @@
   <!-- Create Server Button -->
   <div class="w-full mt-8 px-2">
     <button on:click={() => {
+      if (loading) return;
+
       create();
     }} class="w-full px-2 py-1.5 bg-black rounded-sm flex items-center justify-center">
-      <p class="text-white text-sm mr-2">Создать сервер</p>
+      { #if loading }
+        <p class="text-white text-sm mr-2">Создание сервера...</p>
 
-      <SimpleIcon name="chevron-right" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
+        <RadialSpinner color="#fff" size={15} />
+      { :else }
+        <p class="text-white text-sm mr-2">Создать сервер</p>
+
+        <SimpleIcon name="chevron-right" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
+      { /if }
     </button>
   </div>
 </div>

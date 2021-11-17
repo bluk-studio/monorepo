@@ -33,12 +33,6 @@ function _initialize() {
 
     // Function, that'll fetch projects
     async fetch() {
-      // const profile = await new Promise((resolve, reject) => {
-      //   CurrentProfile.subscribe((object) => {
-      //     resolve(object);
-      //   });
-      // });
-
       // Fetching ProfileProjects
       return new Promise((resolve, reject) => {
         client.query<IProfileProjectsData>(ProfileProjectsQuery).subscribe((response) => {
