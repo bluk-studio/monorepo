@@ -2,8 +2,10 @@
   // Importing modules
   import SimpleIcon from "src/design/Icon/SimpleIcon.svelte";
   import CurrentPageBadge from "src/design/Layout/Header/Special/CurrentPageBadge.svelte";
-  import { CurrentProfile } from "$stores/profile";
   
+  import { CurrentProfile, CurrentProject } from "src/stores";
+  import { fade } from 'svelte/transition';
+
 </script>
 
 <!-- Application Header Layout -->
@@ -15,41 +17,28 @@
       <img src="https://res.cloudinary.com/lococovu-cdn/image/upload/v1636810372/bluk-studio-black.svg" alt="bluk.studio white logotype" class="w-8 h-8">
     </div>
 
-    <!-- { #if } -->
+    { #if $CurrentProject.loaded && $CurrentProject.project?._id != null }
       <!-- Current project button -->
-      <!-- <button class="ml-6 px-4 py-2 bg-black rounded-sm flex items-center justify-center">
-        #Project name
-        <h1 class="text-white text-sm mr-2">Paradise 2.0</h1>
+      <button transition:fade class="ml-6 px-4 py-2 bg-black rounded-sm flex items-center justify-center">
+        <!-- Project name -->
+        <h1 class="text-white text-sm mr-2">{ $CurrentProject.project?.name }</h1>
 
-        #Settings
+        <!-- Settings -->
         <div class="flex items-center">
           <SimpleIcon name="chevron-down" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
         </div>
       </button>
+    { /if }
 
-      #Current page
-      <button class="mx-4 px-4 py-2 border-2 border-black flex items-center justify-center">
-        <p class="text-sm text-black mr-2">Главная</p>
+    <!-- Current page -->
+    <CurrentPageBadge />
 
-        <SimpleIcon name="chevron-down" attrs={{ class: "w-4 h-4 text-black", "stroke-width": "2.5" }} />
-      </button>
-
-      #Command palette
-      <button class="px-4 py-2 border-2 border-black flex items-center">
+    { #if $CurrentProject.loaded && $CurrentProject.project?._id != null }
+      <!-- Command palette -->
+      <button transition:fade class="px-4 py-2 border-2 border-black flex items-center">
         <SimpleIcon name="command" attrs={{ class: "w-4 h-4", "stroke-width": "2.5" }} />
-      </button> -->
-    <!-- { :else if $CurrentProfile.projects && $CurrentProfile.projects.length > 0 } -->
-      <!-- Choose project -->
-      <!-- <button class="px-4 py-2 bg-black flex items-center rounded-sm mx-6">
-        <p class="text-white text-sm mr-2">Выбрать сервер</p>
-
-        <SimpleIcon name="chevron-down" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
-      </button> -->
-
-    <!-- { :else } -->
-      <!-- Current page -->
-      <CurrentPageBadge />
-    <!-- { /if } -->
+      </button>
+    { /if }
   </div>
 
   <!-- Right Panel -->

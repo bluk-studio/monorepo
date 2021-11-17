@@ -28,7 +28,7 @@
       };
       currentPage = CreateProjectPages.filter((x) => x.id == pathSplitted[pathSplitted.length - 1])[0];
     } else {
-      goto('/app/create/plan');
+      goto('/app/create/plan', { replaceState: true });
     };
   });
 </script>

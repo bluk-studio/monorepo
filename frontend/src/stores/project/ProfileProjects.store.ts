@@ -19,7 +19,7 @@ function _initialize() {
   const { subscribe, update } = writable(defaultStore);
 
   // Function, that'll handle project list update process
-  function updateList(projects: Array<IProject>) {
+  function updateList(projects: IProject[]) {
     update((object) => {
       object.loaded = true;
       object.list = projects;

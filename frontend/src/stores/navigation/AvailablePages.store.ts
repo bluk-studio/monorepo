@@ -6,7 +6,7 @@ import type { IPage } from 'src/config';
 import type { IProfile, IProject } from '@app/shared';
 
 // Importing stores
-import { ProfileProjects } from 'src/stores/project';
+import { ProfileProjects, CurrentProject } from 'src/stores/project';
 
 
 export interface IAvailablePagesStore {
@@ -20,8 +20,14 @@ function _initialize() {
   };
   const { subscribe, update } = writable(defaultStore);
 
-  let profile: IProfile = {};
+  let profile: Partial<IProfile> = {};
   let projects: Array<IProject> = [];
+
+  // +todo
+  let project: { current: Partial<IProject>, state: Object } = {
+    current: {},
+    state: {}
+  };
 
   // Function, that'll update our store
 
@@ -32,6 +38,14 @@ function _initialize() {
     projects = object?.list ?? [];
     
     updateAvailability();
+  });
+
+  CurrentProject.subscribe((object) => {
+    if (object.loaded) {
+      project.current = object.project;
+
+      updateAvailability();
+    };
   });
 
   // Function, that'll use local profile and
@@ -49,7 +63,12 @@ function _initialize() {
       // check createProject
       } else if (page.checkName == 'createProject') {
         available.push(page);
-      };
+      // check currentProject
+      } else if (page.checkName == 'currentProject') {
+        if (project?.current?._id != null) {
+          available.push(page);
+        };
+      }
     });
 
     updateList(available);

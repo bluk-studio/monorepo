@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
   
   import { CurrentProfile } from 'src/stores';
-  import type { ICurrentProfile } from '@app/shared';
+  import type { ICurrentProfile } from 'src/stores';
 
   onMount(async () => {
     // Checking if current page

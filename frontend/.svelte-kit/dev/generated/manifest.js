@@ -13,7 +13,10 @@ const c = [
 	() => import("../../../src/routes/app/create/finish.svelte"),
 	() => import("../../../src/routes/app/create/plan.svelte"),
 	() => import("../../../src/routes/app/[projectId]/__layout.svelte"),
-	() => import("../../../src/routes/app/[projectId]/dashboard.svelte")
+	() => import("../../../src/routes/app/[projectId]/index.svelte"),
+	() => import("../../../src/routes/app/[projectId]/dashboard.svelte"),
+	() => import("../../../src/routes/app/[projectId]/editor/index.svelte"),
+	() => import("../../../src/routes/app/[projectId]/editor/explorer.svelte")
 ];
 
 const d = decodeURIComponent;
@@ -46,8 +49,17 @@ export const routes = [
 	// src/routes/app/create/plan.svelte
 	[/^\/app\/create\/plan\/?$/, [c[0], c[4], c[7], c[12]], [c[1]]],
 
+	// src/routes/app/[projectId]/index.svelte
+	[/^\/app\/([^/]+?)\/?$/, [c[0], c[4], c[13], c[14]], [c[1]], (m) => ({ projectId: d(m[1])})],
+
 	// src/routes/app/[projectId]/dashboard.svelte
-	[/^\/app\/([^/]+?)\/dashboard\/?$/, [c[0], c[4], c[13], c[14]], [c[1]], (m) => ({ projectId: d(m[1])})]
+	[/^\/app\/([^/]+?)\/dashboard\/?$/, [c[0], c[4], c[13], c[15]], [c[1]], (m) => ({ projectId: d(m[1])})],
+
+	// src/routes/app/[projectId]/editor/index.svelte
+	[/^\/app\/([^/]+?)\/editor\/?$/, [c[0], c[4], c[13], c[16]], [c[1]], (m) => ({ projectId: d(m[1])})],
+
+	// src/routes/app/[projectId]/editor/explorer.svelte
+	[/^\/app\/([^/]+?)\/editor\/explorer\/?$/, [c[0], c[4], c[13], c[17]], [c[1]], (m) => ({ projectId: d(m[1])})]
 ];
 
 export const fallback = [c[0](), c[1]()];

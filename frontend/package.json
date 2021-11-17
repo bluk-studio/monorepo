@@ -33,6 +33,7 @@
 		"feather-icon": "^0.1.0",
 		"feather-icons": "^4.28.0",
 		"graphql": "^15.5.1",
-		"svelte-apollo-client": "^0.1.4"
+		"svelte-apollo-client": "^0.1.4",
+		"svelte-grid": "^5.1.0"
 	}
 }

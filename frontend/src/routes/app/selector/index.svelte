@@ -85,7 +85,9 @@
 
           <!-- Buttons -->
           <div class="w-full">
-            <button class="px-2 py-1 border-2 border-black flex items-center justify-center">
+            <button on:click={() => {
+              goto(`/app/${project._id}`)
+            }} class="px-2 py-1 border-2 border-black flex items-center justify-center">
               <p class="text-black text-xs mr-0.5">Выбрать</p>
 
               <SimpleIcon name="chevron-right" attrs={{ class: "w-4 h-4 text-black", "stroke-width": "2.5" }} />
