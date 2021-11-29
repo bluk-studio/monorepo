@@ -1,84 +1,58 @@
 <script lang="ts">
   // Importing modules
-  import { CurrentProject } from 'src/stores';
+  import { CurrentProject, ProjectDashboard } from 'src/stores';
   import { SimpleIcon } from 'src/design';
+  import { onMount } from 'svelte';
 
   import Grid from "svelte-grid";
   import GridHelp from "svelte-grid/build/helper/index.mjs";
 
   const COLS = 6;
 
-  // +todo
-  let widgets = [
-    {
-      id: 1,
-      size: {
-        width: 2,
-        height: 3
-      },
-      position: {
-        x: 0,
-        y: 0,
-      },
-      data: {
-        type: 'players',
-        randomData: 'true',
-      },    
-    },
-    {
-      id: 2,
-      size: {
-        width: 2,
-        height: 3,
-      },
-      position: {
-        x: 0,
-        y: 0,
-      },
-      data: {
-        type: 'controls',
-        randomData: 'true',
-      },
-    },
-    {
-      id: 3,
-      size: {
-        width: 2,
-        height: 6
-      },
-      position: {
-        x: 0,
-        y: 0,
-      },
-      data: {
-        type: 'console',
-        randomData: 'true',
-      },
-    },
-    {
-      id: 4,
-      size: {
-        width: 4,
-        height: 3
-      },
-      position: {
-        x: 0,
-        y: 0,
-      },
-      data: {
-        type: 'usage',
-        randomData: 'true',
-      },
+  function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-  ];
+    
+    return result;
+  };
 
-  $: gridItems = GridHelp.adjust(widgets.map((widget) => {
-    return {
-      [COLS]: GridHelp.item({ x: widget.position.x, y: widget.position.y, w: widget.size.width, h: widget.size.height }),
-      id: widget.id,
-      ...widget.data,
-    };
-  }), COLS);
+  // Function, that'll handle widgets synchronization
+  async function syncWidgets() {
+    // Serializing items
+    const serialized = gridItems.map((item) => {
+      return {
+        type: item.type,
+        x: item[COLS].x ?? 0,
+        y: item[COLS].y ?? 0,
+        width: item[COLS].w ?? 2,
+        height: item[COLS].h ?? 2,
+      };
+    });
+
+    // Updating
+    await ProjectDashboard.updateLayout(String($ProjectDashboard._id), serialized);
+  };
+
+  // onMount function
+  onMount(async () => {
+    // Fetching ProjectDashboardConfig
+    await ProjectDashboard.fetch(String($CurrentProject.project._id));
+    
+    gridItems = $ProjectDashboard.widgets.map((widget) => {
+      return {
+        [COLS]: GridHelp.item({ x: widget.x, y: widget.y, w: widget.width, h: widget.height }),
+        id: makeid(4),
+        type: widget.type,
+      };
+    });
+  });
+
+  let gridItems = [];
   $: project = $CurrentProject.project;
 </script>
 
@@ -213,11 +187,11 @@
 
 <!-- Widgets Section -->
 <section class="w-full relative mb-8">
-  <Grid bind:items={gridItems} rowHeight={100} let:item let:dataItem cols={[[,6]]} fillSpace={true}>
+  <Grid on:pointerup={syncWidgets} bind:items={gridItems} rowHeight={100} let:item let:dataItem cols={[[,6]]} fillSpace={true}>
     <div class="w-full h-full bg-gray-200 rounded-sm">
       <!-- +todo -->
       <!-- Players widget -->
-      { #if dataItem.type == 'players' }
+      { #if dataItem.type == 'PLAYERS' }
         <!-- Header -->
         <div class="w-full border-b-2 border-gray-300 py-2 px-4 flex items-center justify-between">
           <h1 class="text-md text-black font-medium">Игроки</h1>
