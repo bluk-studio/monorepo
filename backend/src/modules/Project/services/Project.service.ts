@@ -18,12 +18,18 @@ export class ProjectService {
     @InjectModel('Project')
     private readonly projectModel: Model<ProjectDocument>,
 
+    @InjectModel('ProjectMember')
+    private readonly projectMemberModel: Model<ProjectMemberDocument>,
+
     private readonly projectMemberService: ProjectMemberService,
   ) {}
 
   // public fetchById
-  public async fetchById(projectId: string): Promise<Project> {
-    const _id = new Types.ObjectId(projectId);
+  public async fetchById(projectId: string | Types.ObjectId): Promise<Project> {
+    const _id = 
+      projectId instanceof Types.ObjectId
+        ? projectId
+        : new Types.ObjectId(projectId);
 
     return await this.projectModel.findOne({ _id });
   }
@@ -38,8 +44,16 @@ export class ProjectService {
         : new Types.ObjectId(profileId);
 
     // Fetching projects
-    return await this.projectModel.find({ 'members.uid': _profileId });
-  }
+    const projectMemberInstances = await this.projectMemberModel.find({ uid: _profileId });
+    const projects: Array<Project> = [];
+    for (const instance of projectMemberInstances) {
+      const project = await this.projectModel.findOne({ _id: instance.pid });
+
+      if (project) projects.push(project);
+    };
+
+    return projects;
+  };
 
   // public fetchMembers
   public async fetchMembers(projectId: string): Promise<Array<ProjectMember>> {

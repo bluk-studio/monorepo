@@ -57,6 +57,44 @@ enum MemberRole {
   DEVELOPER
 }
 
+type DashboardWidget {
+  """DashboardWidget's type"""
+  type: EWidgetType!
+
+  """X coordinate of DashboardWidget's position"""
+  x: Float!
+
+  """Y coordinate of DashboardWidget's position"""
+  y: Float!
+
+  """DashboardWidget's width"""
+  height: Float!
+
+  """DashboardWidget's height"""
+  width: Float!
+}
+
+"""DashboardWidget's type (CONSOLE, PLAYERS, and so on...)"""
+enum EWidgetType {
+  PLAYERS
+  CONSOLE
+  LOGS
+  CONTROLS
+}
+
+type ProjectDashboardConfig {
+  """System ID of ProjectDashboardConfig instance"""
+  _id: String!
+
+  """Display name of ProjectDashboardConfig"""
+  name: String!
+  project: Project!
+  profile: Profile!
+
+  """Array of DashboardWidget's assosiated with this ProjectDashboardConfig"""
+  widgets: [DashboardWidget!]!
+}
+
 type Query {
   me: Profile!
 
@@ -65,6 +103,8 @@ type Query {
 
   """Fetch all ProjectObject's of a current profile"""
   ProfileProjects: [Project!]!
+  ProjectDashboard(dashboardId: String!): ProjectDashboardConfig!
+  ProjectDashboardByProfile(projectId: String): [ProjectDashboardConfig!]!
 }
 
 type Mutation {
@@ -72,9 +112,30 @@ type Mutation {
 
   """Create new project using data passed into CreateProjectInput"""
   CreateProject(input: CreateProjectInput!): Project!
+  CreateProjectDashboard(projectId: String!, input: CreateDashboardConfigInput!): ProjectDashboardConfig!
+  UpdateProjectDashboard(input: UpdateDashboardConfigInput!, dashboardId: String!): ProjectDashboardConfig!
 }
 
 input CreateProjectInput {
   name: String!
   description: String
+}
+
+input CreateDashboardConfigInput {
+  name: String!
+  widgets: [DashboardWidgetInput!]
+}
+
+input DashboardWidgetInput {
+  """DashboardWidget's type"""
+  type: EWidgetType!
+  x: Float = 0
+  y: Float = 0
+  width: Float = 2
+  height: Float = 2
+}
+
+input UpdateDashboardConfigInput {
+  name: String
+  widgets: [DashboardWidgetInput!]
 }

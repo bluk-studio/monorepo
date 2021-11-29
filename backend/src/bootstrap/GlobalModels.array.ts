@@ -1,5 +1,5 @@
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProfileSchema, ProjectMemberSchema, ProjectSchema } from 'src/types';
+import { ProfileSchema, ProjectDashboardConfigSchema, ProjectMemberSchema, ProjectSchema } from 'src/types';
 
 export const GlobalModels = MongooseModule.forFeature([
   // Common models
@@ -17,4 +17,8 @@ export const GlobalModels = MongooseModule.forFeature([
     name: 'ProjectMember',
     schema: ProjectMemberSchema,
   },
+  {
+    name: 'ProjectDashboardConfig',
+    schema: ProjectDashboardConfigSchema,
+  }
 ]);
