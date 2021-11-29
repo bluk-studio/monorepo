@@ -4,6 +4,8 @@ import { ProjectDashboardService, ProjectService } from 'src/modules/Project/ser
 import { HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { UserAuthGuard } from 'src/guards';
 import { ProfileService } from 'src/modules/Profile/services';
+import { IRequest, ISessionProject } from '@app/shared';
+import { Types } from 'mongoose';
 
 @Resolver(of => ProjectDashboardConfigObject)
 export class ProjectDashboardConfigResolver {
@@ -48,6 +50,97 @@ export class ProjectDashboardConfigResolver {
     };
   };
 
+  // query CurrentProjectDashboard
+  @UseGuards(UserAuthGuard)
+  @Query(returns => ProjectDashboardConfigObject, { name: 'CurrentProjectDashboard' })
+  public async queryCurrentProjectDashboard(
+    @Args('projectId') projectId: string,
+    @Context('user') profile: Profile,
+    @Context('req') req: IRequest,
+  ) {
+    const _projectId = new Types.ObjectId(projectId);
+
+    // Getting information from session object.
+    const projects = req.session.projects ?? [];
+    const project = projects.find((x) => x._id == projectId);
+    
+    if (project && project.activeDashboardId) {
+      // Getting this dashboard id
+      const dashboard = await this.service.fetchById(project.activeDashboardId);
+
+      if (!dashboard) {
+        // Updating session
+        const newProjectConfig: ISessionProject = {
+          _id: projectId,
+        };
+
+        if (projects.find((x) => x._id == projectId)) {
+          const index = projects.findIndex((x) => x._id == projectId);
+          projects[index] = newProjectConfig;       
+        };
+
+        req.session.projects = projects;
+
+        // Throwing error
+        throw new HttpException(`ProjectDashboard with id ${project.activeDashboardId} does not exists!`, HttpStatus.NOT_FOUND);
+      } else {
+        return dashboard;
+      };
+    } else {
+      // Getting all dashboards
+      const dashboards = await this.service.fetchByProfileInProject(profile._id, _projectId);
+      const currentDashboard = dashboards[0];
+      
+      // Updating session
+      const newProjectConfig: ISessionProject = {
+        _id: projectId,
+        activeDashboardId: String(currentDashboard._id),
+      };
+
+      if (projects.find((x) => x._id == projectId)) {
+        const index = projects.findIndex((x) => x._id == projectId);
+        projects[index] = newProjectConfig;       
+      } else {
+        projects.push(newProjectConfig);
+      };
+
+      req.session.projects = projects;
+
+      return currentDashboard;
+    };
+  };
+
+  // mutation SetCurrentProjectDashboard
+  @UseGuards(UserAuthGuard)
+  @Mutation(returns => ProjectDashboardConfigObject, { name: 'SetCurrentProjectDashboard' })
+  public async setCurrentProjectDashboard(
+    @Args('projectId') projectId: string,
+    @Args('dashboardId') dashboardId: string,
+    @Context('user') profile: Profile,
+    @Context('req') req: IRequest,
+  ) {
+    const projects = req.session.projects ?? [];
+    const dashboard = await this.service.fetchById(dashboardId);
+
+    if (!dashboard) throw new HttpException(`ProjectDashboard with id ${dashboardId} does not exists`, HttpStatus.NOT_FOUND);
+
+    // Updating session
+    const newProjectConfig: ISessionProject = {
+      _id: projectId,
+      activeDashboardId: String(dashboardId),
+    };
+
+    if (projects.find((x) => x._id == projectId)) {
+      const index = projects.findIndex((x) => x._id == projectId);
+      projects[index] = newProjectConfig;       
+    } else {
+      projects.push(newProjectConfig);
+    };
+
+    req.session.projects = projects;
+    return dashboard;
+  };
+  
   // mutation CreateProjectDashboard
   @UseGuards(UserAuthGuard)
   @Mutation(returns => ProjectDashboardConfigObject, { name: 'CreateProjectDashboard' })

@@ -6,6 +6,8 @@ export type ProjectDashboardConfigDocument = Document & ProjectDashboardConfig;
 
 @Schema()
 export class ProjectDashboardConfig implements Omit<IProjectDashboardConfig, '_id'> {
+  _id: Types.ObjectId;
+  
   @Prop({ type: String, required: true })
   name: string;
 

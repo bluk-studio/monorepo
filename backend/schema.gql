@@ -105,6 +105,7 @@ type Query {
   ProfileProjects: [Project!]!
   ProjectDashboard(dashboardId: String!): ProjectDashboardConfig!
   ProjectDashboardByProfile(projectId: String): [ProjectDashboardConfig!]!
+  CurrentProjectDashboard(projectId: String!): ProjectDashboardConfig!
 }
 
 type Mutation {
@@ -112,6 +113,7 @@ type Mutation {
 
   """Create new project using data passed into CreateProjectInput"""
   CreateProject(input: CreateProjectInput!): Project!
+  SetCurrentProjectDashboard(dashboardId: String!, projectId: String!): ProjectDashboardConfig!
   CreateProjectDashboard(projectId: String!, input: CreateDashboardConfigInput!): ProjectDashboardConfig!
   UpdateProjectDashboard(input: UpdateDashboardConfigInput!, dashboardId: String!): ProjectDashboardConfig!
 }
