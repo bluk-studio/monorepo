@@ -3,7 +3,7 @@
   import { SimpleIcon } from 'src/design';
 </script>
 
-<!--  -->
+<!-- Content -->
 <section class="w-full flex flex-wrap items-stretch">
   <!-- Toggle settings card -->
   <div class="w-1/3 relative p-2">

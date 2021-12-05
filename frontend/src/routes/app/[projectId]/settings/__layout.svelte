@@ -14,9 +14,9 @@
   });
 </script>
 
-<section class="w-full relative flex">
+<section class="w-full h-full relative flex overflow-hidden">
   <!-- Sidebar -->
-  <div class="w-1/4 h-full overflow-y-auto px-2 pt-4">
+  <div class="w-1/4 h-full px-2 pt-4">
     <!-- Back button -->
     <button on:click={() => {
       goto(`/app/${$page.params.projectId}/dashboard`)
@@ -38,7 +38,7 @@
   </div>
 
   <!-- Content -->
-  <div class="w-3/4 py-2">
+  <div class="w-3/4 py-2 overflow-y-auto">
     <slot />
   </div>
 </section>
