@@ -118,7 +118,7 @@ export const Pages: Array<IPage> = [
   // Settings
   {
     url: '/app/${ $page.params.projectId }/settings',
-    regex: /\/app\/[\s\S]{24}\/settings/,
+    regex: /\/app\/[\s\S]{24}\/settings\/[\s\S]+/,
     checkName: 'currentProject',
     category: 'project',
 

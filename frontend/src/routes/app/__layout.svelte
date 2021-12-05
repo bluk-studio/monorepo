@@ -6,7 +6,7 @@
   
   import { CurrentProfile, ProfileProjects } from 'src/stores';
   
-  import { EditorHeader, ApplicationHeader } from 'src/design';
+  import { EditorHeader, ApplicationHeader, RadialSpinner } from 'src/design';
 
   onMount(() => {
     // Trying to fetch profile
@@ -41,6 +41,8 @@
     </div>
   { :else }
     <!-- Loading spinner -->
-    <p>Getting profile information...</p>
+    <div class="w-full h-screen flex items-center justify-center">
+      <RadialSpinner />
+    </div>
   { /if }
 </main>
