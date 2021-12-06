@@ -1,6 +1,6 @@
 import { IProject } from '@app/shared';
 import { ObjectType, Field } from '@nestjs/graphql';
-import { ProjectMember, ProjectMemberObject } from 'src/types';
+import { ProjectMember, ProjectMemberObject, ProjectSettingsObject } from 'src/types';
 import { Types } from 'mongoose';
 
 @ObjectType('Project')
@@ -16,6 +16,9 @@ export class ProjectObject implements IProject {
 
   @Field({ nullable: true, description: 'Optional project description' })
   description?: string;
+
+  @Field(type => ProjectSettingsObject, { nullable: false, description: "Project's Settings object" })
+  settings: ProjectSettingsObject
 
   @Field((type) => [ProjectMemberObject], {
     nullable: false,

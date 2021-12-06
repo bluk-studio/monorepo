@@ -18,7 +18,19 @@ type Project {
 
   """Optional project description"""
   description: String
+
+  """Project's Settings object"""
+  settings: ProjectSettings!
   members: [ProjectMember!]!
+}
+
+type ServerSettings {
+  onlineMode: Boolean!
+  whitelist: Boolean!
+}
+
+type ProjectSettings {
+  server: ServerSettings!
 }
 
 type MemberPermission {

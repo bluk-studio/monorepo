@@ -1,6 +1,7 @@
-import { IProject } from '@app/shared';
+import { IProject, IServerSettings } from '@app/shared';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { ProjectSettings, ProjectSettingsSchema } from '.';
 import { ProjectMember } from '.';
 
 export type ProjectDocument = Document & Project;
@@ -14,6 +15,17 @@ export class Project implements IProject {
 
   @Prop({ required: false, unique: false })
   description?: string;
+
+  @Prop({ type: ProjectSettingsSchema, required: true, default: () => {
+    // Default project settings
+    return {
+      server: <IServerSettings>{
+        onlineMode: false,
+        whitelist: true,
+      },
+    };
+  }})
+  settings: ProjectSettings;
 
   members: Array<ProjectMember>;
 }
