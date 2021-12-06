@@ -1,46 +1,14 @@
 <script lang="ts">
   // Importing modules
-  import { SimpleIcon } from 'src/design';
+  import { SimpleIcon, UniversalSettingCard } from 'src/design';
+  import { GeneralSettings } from 'src/config';
 </script>
 
 <!-- Content -->
 <section class="w-full flex flex-wrap items-stretch">
-  <!-- Toggle settings card -->
-  <div class="w-1/3 relative p-2">
-    <div class="bg-gray-100 p-4 w-full h-full">
-      <!-- Header && Toggle -->
-      <div class="w-full flex items-center justify-between">
-        <!-- Title -->
-        <div class="flex items-center">
-          <!-- Icon -->
-          <div class="p-2 bg-yellow-400 rounded-full flex items-center justify-center">
-            <SimpleIcon name="rss" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
-          </div>
-
-          <!-- Text -->
-          <div class="ml-2 flex items-center">
-            <p class="text-md text-black font-medium">Онлайн-режим</p>
-
-            <button>
-              <SimpleIcon name="external-link" attrs={{ class: "ml-1.5 w-3 h-3 text-black", "stroke-width": "2.5" }} />
-            </button>
-          </div>
-        </div>
-
-        <!-- Toggle -->
-        <div>
-          <button class="rounded-full p-0.5 bg-gray-300 w-10">
-            <div class="w-4 h-4 rounded-full bg-white shadow-sm"></div>
-          </button>
-        </div>
-      </div>
-
-      <!-- Description -->
-      <div class="my-2">
-        <p class="text-sm text-black opacity-80">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore, a.</p>
-      </div>
-    </div>
-  </div>
+  { #each GeneralSettings as setting }
+    <UniversalSettingCard card={setting} />
+  { /each }
 
   <!-- Enabled toggle button card -->
   <div class="w-1/3 relative p-2">

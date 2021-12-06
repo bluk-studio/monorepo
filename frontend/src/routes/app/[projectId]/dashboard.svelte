@@ -2,6 +2,9 @@
   // Importing modules
   import { CurrentProject } from 'src/stores';
   import { SimpleIcon, DashboardTiles } from 'src/design';
+import { InfoFooterButtons } from '$config/project';
+import { goto } from '$app/navigation';
+import { page } from '$app/stores';
 
   $: project = $CurrentProject.project;
 </script>
@@ -17,21 +20,15 @@
     </div>
 
     <!-- HeroWidget Controls -->
-    <div class="flex items-stretch">
-      <!-- Settings -->
-      <button class="mx-2 px-3 py-1.5 border-2 border-black flex items-center justify-self-center">
-        <p class="text-black text-sm mr-1.5">Настройки</p>
+    <!-- <div class="flex items-stretch">
 
-        <SimpleIcon name="settings" attrs={{ class: "w-4 h-4 text-black", "stroke-width": "2.5" }} />
-      </button>
-
-      <!-- Hide -->
+      #Hide
       <button class="mx-2 px-3 py-1.5 bg-black flex items-center justify-center">
         <p class="text-sm text-white mr-1.5">Скрыть</p>
 
         <SimpleIcon name="chevron-up" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
       </button>
-    </div>
+    </div> -->
   </div>
 
   <!-- Server Information -->
@@ -92,35 +89,19 @@
   <div class="flex items-stretch justify-between">
     <!-- Starred Links -->
     <div class="flex items-stretch">
-      <!-- Editor -->
-      <button class="mx-2 px-2 py-1.5 bg-black flex items-center justfiy-center">
-        <SimpleIcon name="code" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
-        
-        <p class="text-sm text-white ml-1.5">Редактор</p>
-      </button>
-
-      <!-- Players -->
-      <button class="mx-2 px-2 py-1.5 border-2 border-black flex items-center justify-center">
-        <SimpleIcon name="user" attrs={{ class: "w-4 h-4 text-black", "stroke-width": "2.5" }} />
-        
-        <p class="text-sm text-black ml-1.5">Игроки</p>
-      </button>
-
-      <!-- Settings -->
-      <button class="mx-2 px-2 py-1.5 border-2 border-black flex items-center justify-center">
-        <SimpleIcon name="settings" attrs={{ class: "w-4 h-4 text-black", "stroke-width": "2.5" }} />
-        
-        <p class="text-sm text-black ml-1.5">Настройки</p>
-      </button>
-
-      <!-- More -->
-      <button on:click={() => {
-        document.dispatchEvent(new Event('openPageExplorer'));
-      }} class="mx-2 px-2 py-1.5 border-2 border-black flex items-center justify-center">
-        <SimpleIcon name="external-link" attrs={{ class: "w-4 h-4 text-black", "stroke-width": "2.5" }} />
-        
-        <p class="text-sm text-black ml-1.5">Больше</p>
-      </button>
+      { #each InfoFooterButtons as button }
+        <button on:click={() => {
+          if (button.url) {
+            goto(`/app/${$page.params.projectId}/${button.url}`);
+          } else if (button.click) {
+            button.click();
+          };
+        }} class="mx-2 px-2 py-1.5 { button.isGhost ? 'border-2 border-black text-black' : 'text-white bg-black' } flex items-center justfiy-center">
+          <SimpleIcon name="{ button.icon }" attrs={{ class: "w-4 h-4", "stroke-width": "2.5" }} />
+          
+          <p class="text-sm ml-1.5">{ button.title }</p>
+        </button>
+      { /each }
     </div>
 
     <!-- Basic controls -->
