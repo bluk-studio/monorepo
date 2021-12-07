@@ -1,4 +1,4 @@
-import { getFullday, getOnlineMode, getPublicAddress, getWhitelist, toggleFullday, toggleOnlineMode, toggleWhitelist, updatePublicAddress } from "$stores/project/settings";
+import { getOnlineMode, getPublicAddress, getWhitelist, toggleOnlineMode, toggleWhitelist, updatePublicAddress } from "$stores/project/settings";
 import { ESettingCardType, SettingCard } from "../SharedInterfaces.config";
 
 // Exporting GeneralSettings card
@@ -31,20 +31,6 @@ export const GeneralSettings: Array<SettingCard> = [
     getter: getWhitelist,
   },
 
-  // 24/7 mode
-  {
-    type: ESettingCardType.TOGGLER,
-
-    title: 'Режим 24/7',
-    description: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore, a.',
-
-    icon: 'clock',
-    color: '#ec4899',
-
-    updater: toggleFullday,
-    getter: getFullday,
-  },
-  
   // Named Address
   {
     type: ESettingCardType.INPUT,
@@ -54,6 +40,15 @@ export const GeneralSettings: Array<SettingCard> = [
 
     icon: 'globe',
     color: '#10b981',
+
+    // Placeholder
+    textPlaceholder: 'Публичный адресс',
+    placeholder: {
+      side: 'right',
+      text: '.bluk.studio'
+    },
+
+    footerText: 'Принимаются только <span class="bg-gray-300 rounded-full px-1.5 py-0.5">Английские буквы</span> максимум <span class="bg-gray-300 rounded-full px-1.5 py-0.5">20 букв</span>',
 
     updater: updatePublicAddress,
     getter: getPublicAddress,

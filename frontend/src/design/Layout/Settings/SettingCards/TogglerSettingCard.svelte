@@ -1,20 +1,30 @@
 <script lang="ts">
   // Importing modules
-  import type { SettingCard } from "$config/project";
+  import type { TogglerSettingCard } from 'src/config/project';
+  import { ESettingCardType } from "$config/project";
   import { SimpleIcon } from 'src/design/Icon';
   import RadialSpinner from "src/design/Loaders/RadialSpinner.svelte";
   import { onMount } from "svelte";
 
   // Variables
-  let toggled: Boolean;
+  let toggled: boolean;
   
+  // Function, that'll toggle this
+  // toggler on or off
+  async function toggle() {
+    const enabled = toggled;
+    toggled = null;
+
+    toggled = await card.updater({ type: ESettingCardType.TOGGLER, enabled }) as boolean;
+  };
+
   // onMount event
   onMount(async () => {
     // Getting current state of this setting card
-    toggled = (await card.getter()) as Boolean;
+    toggled = (await card.getter()) as boolean;
   });
 
-  export let card: SettingCard;
+  export let card: TogglerSettingCard;
 </script>
 
 <div class="w-{ card.size ?? '1/3' } relative p-2">
@@ -48,12 +58,12 @@
       { :else }
         { #if toggled }
           <!-- Toggle on button -->
-          <button class="rounded-full p-0.5 bg-indigo-500 w-10 flex justify-end">
+          <button on:click={toggle} class="rounded-full p-0.5 bg-indigo-500 w-10 flex justify-end">
             <div class="w-4 h-4 rounded-full bg-white shadow-sm"></div>
           </button>
         { :else }
           <!-- Toggled off button -->
-          <button class="rounded-full p-0.5 bg-gray-300 w-10">
+          <button on:click={toggle} class="rounded-full p-0.5 bg-gray-300 w-10">
             <div class="w-4 h-4 rounded-full bg-white shadow-sm"></div>
           </button>
         { /if }

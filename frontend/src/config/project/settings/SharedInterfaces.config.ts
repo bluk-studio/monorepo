@@ -18,7 +18,9 @@ export interface InputUpdaterPayload {
 };
 
 // Exporting SettingCard interfaces
-export interface SettingCard {
+export type SettingCard = TogglerSettingCard | InputSettingCard;
+
+export interface BasicSettingCard {
   type: ESettingCardType,
 
   // Visual
@@ -33,6 +35,19 @@ export interface SettingCard {
   documentationLink?: string,
 
   // Technical
-  updater: (input: SettingUpdaterInput) => void,
+  updater: (input: SettingUpdaterInput) => Promise<boolean | string>,
   getter: () => Promise<boolean | string>,
+};
+
+export interface TogglerSettingCard extends BasicSettingCard {};
+
+export interface InputSettingCard extends BasicSettingCard {
+  // Placeholders configuration
+  textPlaceholder?: string,
+  placeholder?: {
+    side: 'left' | 'right',
+    text: string,
+  },
+
+  footerText?: string,
 };
