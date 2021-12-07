@@ -1,4 +1,4 @@
-import { EMemberRole, IMemberPermission } from '@app/shared';
+import { EMemberRole, EPermission, IMemberPermission } from '@app/shared';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -13,12 +13,32 @@ export class ProjectMemberService {
 
   // public fetchProjectMembers
   public async fetchProjectMembers(
-    projectId: string,
+    projectId: string | Types.ObjectId,
   ): Promise<Array<ProjectMember>> {
-    const _id = new Types.ObjectId(projectId);
+    const _id = 
+      projectId instanceof Types.ObjectId
+        ? projectId
+        : new Types.ObjectId(projectId);
 
     // Fetching members
-    return await this.projectMemberModel.find({ pid: _id });
+    const members = await this.projectMemberModel.find({ pid: _id });
+    
+    // +todo remove this
+    const serializedMembers = members.map((member) => {
+      if (member.role == EMemberRole.OWNER) {
+        member.permissions = {
+          list: Object.keys(EPermission).map((permission) => {
+            return {
+              permission: permission as EPermission
+            }
+          }),
+        };
+      };
+
+      return member;
+    });
+
+    return serializedMembers;
   }
 
   // public assignMemberToProject

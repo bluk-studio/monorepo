@@ -25,7 +25,7 @@ export class ProjectService {
   ) {}
 
   // public fetchById
-  public async fetchById(projectId: string | Types.ObjectId): Promise<Project> {
+  public async fetchById(projectId: string | Types.ObjectId): Promise<ProjectDocument> {
     const _id = 
       projectId instanceof Types.ObjectId
         ? projectId
@@ -56,7 +56,7 @@ export class ProjectService {
   };
 
   // public fetchMembers
-  public async fetchMembers(projectId: string): Promise<Array<ProjectMember>> {
+  public async fetchMembers(projectId: string | Types.ObjectId): Promise<Array<ProjectMember>> {
     return await this.projectMemberService.fetchProjectMembers(projectId);
   }
 

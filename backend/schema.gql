@@ -27,6 +27,7 @@ type Project {
 type ServerSettings {
   onlineMode: Boolean!
   whitelist: Boolean!
+  address: String
 }
 
 type ProjectSettings {
@@ -44,6 +45,7 @@ type MemberPermission {
 enum Permission {
   START
   STOP
+  UPDATE_SERVER_SETTINGS
 }
 
 type MemberPermissions {
@@ -128,6 +130,7 @@ type Mutation {
   SetCurrentProjectDashboard(dashboardId: String!, projectId: String!): ProjectDashboardConfig!
   CreateProjectDashboard(projectId: String!, input: CreateDashboardConfigInput!): ProjectDashboardConfig!
   UpdateProjectDashboard(input: UpdateDashboardConfigInput!, dashboardId: String!): ProjectDashboardConfig!
+  UpdateServerSettings(input: UpdateServerSettingsInput!, projectId: String!): ProjectSettings!
 }
 
 input CreateProjectInput {
@@ -152,4 +155,10 @@ input DashboardWidgetInput {
 input UpdateDashboardConfigInput {
   name: String
   widgets: [DashboardWidgetInput!]
+}
+
+input UpdateServerSettingsInput {
+  whitelist: Boolean
+  onlineMode: Boolean
+  address: String
 }

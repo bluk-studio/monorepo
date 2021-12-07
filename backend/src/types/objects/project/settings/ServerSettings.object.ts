@@ -8,4 +8,7 @@ export class ServerSettingsObject implements IServerSettings {
 
   @Field({ nullable: false })
   whitelist: boolean;
+
+  @Field({ nullable: true })
+  address: string;
 };
