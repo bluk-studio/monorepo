@@ -1,1 +1,2 @@
-export * from './DashboardWidget.object';
+export * from './MovableDashboardWidget.object';
+export * from './types';

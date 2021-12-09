@@ -71,9 +71,24 @@ enum MemberRole {
   DEVELOPER
 }
 
-type DashboardWidget {
-  """DashboardWidget's type"""
-  type: EWidgetType!
+type ProjectDashboardConfig {
+  """System ID of ProjectDashboardConfig instance"""
+  _id: String!
+
+  """Display name of ProjectDashboardConfig"""
+  name: String!
+  project: Project!
+  profile: Profile!
+
+  """Array of DashboardWidget's assosiated with this ProjectDashboardConfig"""
+  widgets: [DashboardWidget!]!
+}
+
+union DashboardWidget = ControlsWidget | ConsoleWidget | PlayersWidget | LogsWidget
+
+type ControlsWidget {
+  type: String!
+  enabled: Boolean!
 
   """X coordinate of DashboardWidget's position"""
   x: Float!
@@ -88,25 +103,55 @@ type DashboardWidget {
   width: Float!
 }
 
-"""DashboardWidget's type (CONSOLE, PLAYERS, and so on...)"""
-enum EWidgetType {
-  PLAYERS
-  CONSOLE
-  LOGS
-  CONTROLS
+type ConsoleWidget {
+  type: String!
+  enabled: Boolean!
+
+  """X coordinate of DashboardWidget's position"""
+  x: Float!
+
+  """Y coordinate of DashboardWidget's position"""
+  y: Float!
+
+  """DashboardWidget's width"""
+  height: Float!
+
+  """DashboardWidget's height"""
+  width: Float!
 }
 
-type ProjectDashboardConfig {
-  """System ID of ProjectDashboardConfig instance"""
-  _id: String!
+type PlayersWidget {
+  type: String!
+  enabled: Boolean!
 
-  """Display name of ProjectDashboardConfig"""
-  name: String!
-  project: Project!
-  profile: Profile!
+  """X coordinate of DashboardWidget's position"""
+  x: Float!
 
-  """Array of DashboardWidget's assosiated with this ProjectDashboardConfig"""
-  widgets: [DashboardWidget!]!
+  """Y coordinate of DashboardWidget's position"""
+  y: Float!
+
+  """DashboardWidget's width"""
+  height: Float!
+
+  """DashboardWidget's height"""
+  width: Float!
+}
+
+type LogsWidget {
+  type: String!
+  enabled: Boolean!
+
+  """X coordinate of DashboardWidget's position"""
+  x: Float!
+
+  """Y coordinate of DashboardWidget's position"""
+  y: Float!
+
+  """DashboardWidget's width"""
+  height: Float!
+
+  """DashboardWidget's height"""
+  width: Float!
 }
 
 type Query {
@@ -140,21 +185,27 @@ input CreateProjectInput {
 
 input CreateDashboardConfigInput {
   name: String!
-  widgets: [DashboardWidgetInput!]
-}
-
-input DashboardWidgetInput {
-  """DashboardWidget's type"""
-  type: EWidgetType!
-  x: Float = 0
-  y: Float = 0
-  width: Float = 2
-  height: Float = 2
 }
 
 input UpdateDashboardConfigInput {
   name: String
-  widgets: [DashboardWidgetInput!]
+  widgets: [MovableDashboardWidgetInput!]
+}
+
+input MovableDashboardWidgetInput {
+  type: EWidgetType!
+  x: Float!
+  y: Float!
+  width: Float!
+  height: Float!
+}
+
+"""DashboardWidget's type (CONSOLE, PLAYERS, and so on...)"""
+enum EWidgetType {
+  PLAYERS
+  CONSOLE
+  LOGS
+  CONTROLS
 }
 
 input UpdateServerSettingsInput {

@@ -2,7 +2,7 @@ import { IProjectDashboardConfig } from '@app/shared';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 import { ProfileObject, ProjectObject } from 'src/types';
-import { DashboardWidgetObject } from '.';
+import { DashboardWidgetUnion } from 'src/types/unions';
 
 @ObjectType('ProjectDashboardConfig')
 export class ProjectDashboardConfigObject implements Omit<IProjectDashboardConfig, 'pid' | 'uid'> {
@@ -18,6 +18,6 @@ export class ProjectDashboardConfigObject implements Omit<IProjectDashboardConfi
   @Field((type) => ProfileObject, { nullable: false, description: "Project instance, that's assosiated with this ProjectDashboardConfig" })
   profile: ProfileObject;
 
-  @Field((type) => [DashboardWidgetObject], { description: "Array of DashboardWidget's assosiated with this ProjectDashboardConfig" })
-  widgets: [DashboardWidgetObject];
+  @Field((type) => [DashboardWidgetUnion], { description: "Array of DashboardWidget's assosiated with this ProjectDashboardConfig" })
+  widgets: [typeof DashboardWidgetUnion];
 };

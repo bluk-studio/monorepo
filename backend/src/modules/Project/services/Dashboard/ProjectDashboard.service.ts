@@ -21,6 +21,7 @@ export class ProjectDashboardService {
   public defaultWidgets: Array<IDashboardWidget> = [
     {
       type: EWidgetType.PLAYERS,
+      enabled: true,
       x: 0,
       y: 0,
       width: 2,
@@ -28,6 +29,7 @@ export class ProjectDashboardService {
     },
     {
       type: EWidgetType.CONTROLS,
+      enabled: true,
       x: 0,
       y: 0,
       width: 2,
@@ -35,11 +37,20 @@ export class ProjectDashboardService {
     },
     {
       type: EWidgetType.CONSOLE,
+      enabled: true,
       x: 0,
       y: 0,
       width: 2,
       height: 6,
-    }
+    },
+    {
+      type: EWidgetType.LOGS,
+      enabled: true,
+      x: 0,
+      y: 0,
+      width: 4,
+      height: 3,
+    },
   ];
 
   // public fetchById
@@ -50,7 +61,7 @@ export class ProjectDashboardService {
         : new Types.ObjectId(id);
 
     // Fetching ProjectDashboardConfig
-    return await this.projectDashboardModel.findOne({ _id });
+    return this._serialize(await this.projectDashboardModel.findOne({ _id }));
   };
 
   // public fetchByProfile
@@ -63,7 +74,9 @@ export class ProjectDashboardService {
     // Fetching by profile id
     const configs = await this.projectDashboardModel.find({ uid: _profileId });
 
-    return configs;
+    return configs.map((config) => {
+      return this._serialize(config);
+    });
   };
 
   // public fetchByProfileInProject
@@ -82,7 +95,7 @@ export class ProjectDashboardService {
         : new Types.ObjectId(projectId);  
 
     // Fetching by profile id
-    const configs: Array<ProjectDashboardConfig> = await this.projectDashboardModel.find({ uid: _profileId, pid: _projectId });
+    const configs: Array<ProjectDashboardConfigDocument> = await this.projectDashboardModel.find({ uid: _profileId, pid: _projectId });
     
     if (configs.length <= 0) {
       const profile = await this.profileService.fetchById(_profileId);
@@ -94,7 +107,9 @@ export class ProjectDashboardService {
       configs.push(defaultConfig);
     };
 
-    return configs;
+    return configs.map((config) => {
+      return this._serialize(config);
+    });
   };
 
   // public fetchByProject
@@ -105,7 +120,9 @@ export class ProjectDashboardService {
         : new Types.ObjectId(projectId);
 
     // Fetching by profile id
-    return await this.projectDashboardModel.find({ pid: _projectId });
+    return (await this.projectDashboardModel.find({ pid: _projectId })).map((config) => {
+      return this._serialize(config);
+    });
   };
 
   // public create
@@ -113,7 +130,7 @@ export class ProjectDashboardService {
     input: CreateDashboardConfigInput, 
     profileId: string | Types.ObjectId,
     projectId: string | Types.ObjectId
-  ): Promise<ProjectDashboardConfig> {
+  ): Promise<ProjectDashboardConfigDocument> {
     const _profileId =
       profileId instanceof Types.ObjectId
         ? profileId
@@ -130,11 +147,7 @@ export class ProjectDashboardService {
 
     // Default widgets
     const widgets: Array<IDashboardWidget> = [];
-    if (!input.widgets || input.widgets?.length <= 0) {
-      widgets.push(...this.defaultWidgets);
-    } else {
-      widgets.push(...input.widgets);
-    };
+    widgets.push(...this.defaultWidgets);
 
     // Creating new dashboard configuration
     const dashboardConfiguration = new this.projectDashboardModel({
@@ -143,7 +156,7 @@ export class ProjectDashboardService {
       uid: profile._id,
       widgets
     });
-    return await dashboardConfiguration.save();
+    return this._serialize(await dashboardConfiguration.save());
   };
 
   // public update
@@ -164,13 +177,63 @@ export class ProjectDashboardService {
     // - name
     if (input.name) dashboardConfig.name = input.name;
 
-    // - widgets
-    if (input.widgets) dashboardConfig.widgets = input.widgets;
+    // - widgets positions
+    if (input.widgets) {
+      const widgets = [];
+      
+      // Adding widgets
+      input.widgets.forEach((value) => {
+        const widget = this.defaultWidgets.find((x) => x.type == value.type);
+        if (!widget) return;
+
+        widget.x = value.x;
+        widget.y = value.y;
+        widget.height = value.height;
+        widget.width = value.width;
+
+        widgets.push(widget);
+      });
+
+      // Adding missing widgets
+      this.defaultWidgets.forEach((widget) => {
+        if (!widgets.find((x) => x.type == widget.type)) {
+          widgets.push(widget);
+        };
+      });
+
+      // Updating DashboardConfig widgets property
+      dashboardConfig.widgets = widgets;
+    } else {
+      dashboardConfig.widgets = this.defaultWidgets;
+    };
 
     await dashboardConfig.updateOne(dashboardConfig);
-    return dashboardConfig;
+    return this._serialize(dashboardConfig);
+  };
+
+  // public _serialize
+  public _serialize(config: ProjectDashboardConfigDocument): ProjectDashboardConfigDocument {
+    // Checking if we have all widgets in widgets
+    // property (and adding them (disabled))
+    this.defaultWidgets.forEach((widget) => {
+      if (!config?.widgets.find((x) => x.type == widget.type)) {
+        widget.enabled = false;
+        config?.widgets.push(widget);
+      };
+    });
+
+    return config;
   };
 
   // +todo
   // public delete
+
+  // public updateWidget
+  public async updateWidget(
+    dashboardId: string | Types.ObjectId,
+    widgetType: EWidgetType,
+    // input:
+  ) {
+
+  };
 };

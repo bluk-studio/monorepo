@@ -1,14 +1,3 @@
-import { EWidgetType } from "@app/shared";
+import { IConsoleWidget, IControlsWidget, ILogsWidget, IPlayersWidget } from "./types";
 
-// Exporting IDashboardWidget interface
-export interface IDashboardWidget {
-  type: EWidgetType; 
-  
-  // Position
-  x: number;
-  y: number;
-
-  // Size
-  width: number;
-  height: number;
-};
+export type IDashboardWidget = IConsoleWidget | IControlsWidget | ILogsWidget | IPlayersWidget;

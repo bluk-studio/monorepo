@@ -84,6 +84,7 @@ export class ProjectDashboardConfigResolver {
         // Throwing error
         throw new HttpException(`ProjectDashboard with id ${project.activeDashboardId} does not exists!`, HttpStatus.NOT_FOUND);
       } else {
+        console.log(dashboard);
         return dashboard;
       };
     } else {
@@ -170,4 +171,9 @@ export class ProjectDashboardConfigResolver {
       throw new HttpException(`ProjectDashboardConfig with id ${dashboardId} isn't Profile's (${profile._id})`, HttpStatus.BAD_REQUEST);
     };
   };
+
+  // mutation UpdateControlsWidget
+  // mutation UpdateConsoleWidget
+  // mutation UpdateProfileWidget
+  // mutation UpdateLogsWidget
 };
