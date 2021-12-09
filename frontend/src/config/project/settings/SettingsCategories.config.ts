@@ -26,4 +26,12 @@ export const SettingsCategories: Array<SettingsCategory> = [
     title: 'Тайлы',
     icon: 'grid',
   },
+
+  // Danger
+  {
+    id: 'danger',
+
+    title: 'Опасная зона',
+    icon: 'alert-triangle',
+  },
 ];

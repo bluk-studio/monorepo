@@ -10,7 +10,7 @@ export type IUpdateProjectDashboardResponse = IExecutionResult<IUpdateProjectDas
 
 // Exporting UpdateProjectDashboard
 export const UpdateProjectDashboard = gql`
-  mutation CreateProject(
+  mutation UpdateProjectDashboard(
     $dashboardId: String!
     $input: UpdateDashboardConfigInput!
   ) {

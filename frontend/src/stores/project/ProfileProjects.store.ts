@@ -31,6 +31,16 @@ function _initialize() {
   return {
     subscribe,
 
+    // clear function
+    clear() {
+      update((object) => {
+        object.loaded = false;
+        object.list = [];
+
+        return object;
+      });
+    },
+
     // Function, that'll fetch projects
     async fetch() {
       // Fetching ProfileProjects
@@ -50,6 +60,7 @@ function _initialize() {
             resolve(response);
           };  
         });
+        client.query(ProfileProjectsQuery).refetch();
       });
     },
   }

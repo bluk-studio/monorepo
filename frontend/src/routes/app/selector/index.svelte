@@ -26,8 +26,8 @@
 <div class="w-full h-full">
   <!-- Loading Spinner -->
   { #if !loaded }
-    <div class="flex justify-center">
-      <RadialSpinner color="#fff" />
+    <div class="w-full h-full flex justify-center items-center">
+      <RadialSpinner color="#000" size={15} />
     </div>
   { :else }
     <!-- Header section -->

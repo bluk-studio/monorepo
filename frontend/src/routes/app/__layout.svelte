@@ -42,7 +42,7 @@
   { :else }
     <!-- Loading spinner -->
     <div class="w-full h-screen flex items-center justify-center">
-      <RadialSpinner />
+      <RadialSpinner color="#000" size={15} />
     </div>
   { /if }
 </main>

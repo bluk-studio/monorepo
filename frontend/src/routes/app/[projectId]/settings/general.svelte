@@ -1,6 +1,6 @@
 <script lang="ts">
   // Importing modules
-  import { SimpleIcon, UniversalSettingCard } from 'src/design';
+  import { UniversalSettingCard } from 'src/design';
   import { GeneralSettings } from 'src/config';
 </script>
 

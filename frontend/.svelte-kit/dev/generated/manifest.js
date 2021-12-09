@@ -18,6 +18,7 @@ const c = [
 	() => import("../../../src/routes/app/[projectId]/settings/__layout.svelte"),
 	() => import("../../../src/routes/app/[projectId]/settings/index.svelte"),
 	() => import("../../../src/routes/app/[projectId]/settings/general.svelte"),
+	() => import("../../../src/routes/app/[projectId]/settings/danger.svelte"),
 	() => import("../../../src/routes/app/[projectId]/settings/tiles.svelte"),
 	() => import("../../../src/routes/app/[projectId]/editor/index.svelte"),
 	() => import("../../../src/routes/app/[projectId]/editor/explorer.svelte")
@@ -65,14 +66,17 @@ export const routes = [
 	// src/routes/app/[projectId]/settings/general.svelte
 	[/^\/app\/([^/]+?)\/settings\/general\/?$/, [c[0], c[4], c[13], c[16], c[18]], [c[1]], (m) => ({ projectId: d(m[1])})],
 
+	// src/routes/app/[projectId]/settings/danger.svelte
+	[/^\/app\/([^/]+?)\/settings\/danger\/?$/, [c[0], c[4], c[13], c[16], c[19]], [c[1]], (m) => ({ projectId: d(m[1])})],
+
 	// src/routes/app/[projectId]/settings/tiles.svelte
-	[/^\/app\/([^/]+?)\/settings\/tiles\/?$/, [c[0], c[4], c[13], c[16], c[19]], [c[1]], (m) => ({ projectId: d(m[1])})],
+	[/^\/app\/([^/]+?)\/settings\/tiles\/?$/, [c[0], c[4], c[13], c[16], c[20]], [c[1]], (m) => ({ projectId: d(m[1])})],
 
 	// src/routes/app/[projectId]/editor/index.svelte
-	[/^\/app\/([^/]+?)\/editor\/?$/, [c[0], c[4], c[13], c[20]], [c[1]], (m) => ({ projectId: d(m[1])})],
+	[/^\/app\/([^/]+?)\/editor\/?$/, [c[0], c[4], c[13], c[21]], [c[1]], (m) => ({ projectId: d(m[1])})],
 
 	// src/routes/app/[projectId]/editor/explorer.svelte
-	[/^\/app\/([^/]+?)\/editor\/explorer\/?$/, [c[0], c[4], c[13], c[21]], [c[1]], (m) => ({ projectId: d(m[1])})]
+	[/^\/app\/([^/]+?)\/editor\/explorer\/?$/, [c[0], c[4], c[13], c[22]], [c[1]], (m) => ({ projectId: d(m[1])})]
 ];
 
 export const fallback = [c[0](), c[1]()];
