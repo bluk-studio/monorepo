@@ -58,7 +58,15 @@ function _initialize() {
         variables: {
           dashboardId,
           input: {
-            widgets
+            widgets: widgets.map((widget) => {
+              return {
+                type: widget.type,
+                x: widget.x,
+                y: widget.y,
+                width: widget.width,
+                height: widget.height,
+              };
+            }),
           }
         },
       })) as IUpdateProjectDashboardResponse;

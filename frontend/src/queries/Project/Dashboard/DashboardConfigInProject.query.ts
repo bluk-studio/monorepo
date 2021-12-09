@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client/core/core.cjs.js';
 import type { IExecutionResult, IProjectDashboardConfig } from '@app/shared';
+import { AllDashboardWidgets } from 'src/queries/Project/Dashboard/Widgets';
 
 // Exporting IDashboardConfigInProject
 export interface IDashboardConfigInProject {
@@ -14,13 +15,7 @@ export const DashboardConfigsInProject = gql`
     ProjectDashboardByProfile(projectId: $projectId) {
       _id
       name
-      widgets {
-        type
-        x
-        y
-        height
-        width
-      }
+      ${AllDashboardWidgets}
     }
   }
 `;
