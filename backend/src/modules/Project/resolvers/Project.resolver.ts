@@ -57,6 +57,19 @@ export class ProjectResolver {
     return this.projectService.createProject(input, profile);
   }
 
+  // mutation deleteProject
+  @UseGuards(UserAuthGuard)
+  @Mutation((returns) => ProjectObject, {
+    name: 'DeleteProject',
+    description: "Deletes Project with passed _id and returns it",
+  })
+  public async deleteProject(
+    @Args('projectId') projectId: string,
+    @Context('user') profile: Profile
+  ) {
+    return await this.projectService.delete(projectId, profile);
+  };
+
   // resolve members field
   @ResolveField('members', (type) => [ProjectMemberObject])
   public async resolveMembers(@Parent() project: ProjectObject) {

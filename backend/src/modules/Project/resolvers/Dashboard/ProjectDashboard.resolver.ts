@@ -84,7 +84,6 @@ export class ProjectDashboardConfigResolver {
         // Throwing error
         throw new HttpException(`ProjectDashboard with id ${project.activeDashboardId} does not exists!`, HttpStatus.NOT_FOUND);
       } else {
-        console.log(dashboard);
         return dashboard;
       };
     } else {

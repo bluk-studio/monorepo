@@ -1,5 +1,5 @@
-import { EMemberRole } from '@app/shared';
-import { Injectable } from '@nestjs/common';
+import { EMemberRole, EPermission } from '@app/shared';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
@@ -10,7 +10,7 @@ import {
   ProjectMember,
   ProjectMemberDocument,
 } from 'src/types';
-import { ProjectMemberService } from '.';
+import { PermissionsService, ProjectMemberService } from '.';
 
 @Injectable()
 export class ProjectService {
@@ -22,6 +22,7 @@ export class ProjectService {
     private readonly projectMemberModel: Model<ProjectMemberDocument>,
 
     private readonly projectMemberService: ProjectMemberService,
+    private readonly permissionsService: PermissionsService,
   ) {}
 
   // public fetchById
@@ -79,5 +80,38 @@ export class ProjectService {
     );
 
     return project;
-  }
+  };
+
+  // public delete
+  public async delete(
+    projectId: string | Types.ObjectId,
+    profile: Profile
+  ): Promise<Project> {
+    const _projectId =
+      projectId instanceof Types.ObjectId
+        ? projectId
+        : new Types.ObjectId(projectId);
+
+    // Getting project with this id
+    const project = await this.fetchById(projectId);
+    const members = await this.fetchMembers(projectId);
+    if (!project || !members) throw new HttpException(`Project with _id: ${projectId} does not exists.`, HttpStatus.NOT_FOUND);
+
+    // Checking if this project has this Profile
+    const member = members.find((x) => String(x.uid) == String(profile._id));
+    
+    if (!member) throw new HttpException(`This Project (_id: ${projectId}) doesn't have this member (_id: ${profile._id})`, HttpStatus.UNAUTHORIZED);
+    const permissions = this.permissionsService.createForPermissions(member.permissions?.list ?? []);
+
+    // Checking if this member has this
+    // permission
+    if (!permissions.has(EPermission.DELETE_PROJECT)) {
+      throw new HttpException(`This member (_id: ${profile._id}) doesn't have ${EPermission.DELETE_PROJECT} permission`, HttpStatus.FORBIDDEN);
+    } else {
+      // Deleting project
+      await project.deleteOne();
+    };
+
+    return project;
+  };
 }
