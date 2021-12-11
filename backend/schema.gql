@@ -179,6 +179,10 @@ type Mutation {
   SetCurrentProjectDashboard(dashboardId: String!, projectId: String!): ProjectDashboardConfig!
   CreateProjectDashboard(projectId: String!, input: CreateDashboardConfigInput!): ProjectDashboardConfig!
   UpdateProjectDashboard(input: UpdateDashboardConfigInput!, dashboardId: String!): ProjectDashboardConfig!
+  UpdateControlsWidget(input: UpdateControlsWidgetInput!, dashboardId: String!): ProjectDashboardConfig!
+  UpdateConsoleWidget(input: UpdateConsoleWidgetInput!, dashboardId: String!): ProjectDashboardConfig!
+  UpdatePlayersWidget(input: UpdatePlayersWidgetInput!, dashboardId: String!): ProjectDashboardConfig!
+  UpdateLogsWidget(input: UpdateLogsWidgetInput!, dashboardId: String!): ProjectDashboardConfig!
   UpdateServerSettings(input: UpdateServerSettingsInput!, projectId: String!): ProjectSettings!
 }
 
@@ -210,6 +214,22 @@ enum EWidgetType {
   CONSOLE
   LOGS
   CONTROLS
+}
+
+input UpdateControlsWidgetInput {
+  enabled: Boolean
+}
+
+input UpdateConsoleWidgetInput {
+  enabled: Boolean
+}
+
+input UpdatePlayersWidgetInput {
+  enabled: Boolean
+}
+
+input UpdateLogsWidgetInput {
+  enabled: Boolean
 }
 
 input UpdateServerSettingsInput {

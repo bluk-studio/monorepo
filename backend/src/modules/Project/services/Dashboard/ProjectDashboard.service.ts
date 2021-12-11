@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ProfileService } from 'src/modules/Profile/services';
-import { CreateDashboardConfigInput, Profile, Project, ProjectDashboardConfig, ProjectDashboardConfigDocument, UpdateDashboardConfigInput } from 'src/types';
+import { ConsoleWidgetObject, ControlsWidgetObject, CreateDashboardConfigInput, LogsWidgetObject, Profile, Project, PlayersWidgetObject, ProjectDashboardConfig, ProjectDashboardConfigDocument, UpdateDashboardConfigInput, UpdateControlsWidgetInput, UpdateConsoleWidgetInput, UpdateLogsWidgetInput, UpdatePlayersWidgetInput } from 'src/types';
 import { ProjectService } from '..';
 
 @Injectable()
@@ -183,13 +183,16 @@ export class ProjectDashboardService {
       
       // Adding widgets
       input.widgets.forEach((value) => {
-        const widget = this.defaultWidgets.find((x) => x.type == value.type);
+        let widget = this.defaultWidgets.find((x) => x.type == value.type);
         if (!widget) return;
 
-        widget.x = value.x;
-        widget.y = value.y;
-        widget.height = value.height;
-        widget.width = value.width;
+        widget = {
+          ...widget,
+          ...value,
+
+          // fuck it you know
+          enabled: true,
+        };
 
         widgets.push(widget);
       });
@@ -231,9 +234,37 @@ export class ProjectDashboardService {
   // public updateWidget
   public async updateWidget(
     dashboardId: string | Types.ObjectId,
-    widgetType: EWidgetType,
-    // input:
+    type: EWidgetType,
+    input: UpdateControlsWidgetInput | UpdateConsoleWidgetInput | UpdatePlayersWidgetInput | UpdateLogsWidgetInput,
+    profile: Profile,
   ) {
+    // Getting dashboard with this id
+    const _dashboardId =
+      dashboardId instanceof Types.ObjectId
+        ? dashboardId
+        : new Types.ObjectId(dashboardId);
 
+    const dashboard = await this.fetchById(_dashboardId);
+    
+    // Checking if owner of this ProjectDashboard
+    // is current profile.
+    if (String(dashboard.uid) != String(profile._id)) throw new HttpException(`This ProjectDashboardConfig (_id: ${_dashboardId}) isn't profile's (_id: ${profile._id})`, HttpStatus.FORBIDDEN);
+
+    // Updating this dashboard's widget
+    dashboard.widgets = dashboard.widgets.map((widget) => {
+      let updatedWidget;
+      if (widget.type == type) {
+        updatedWidget = 
+          {
+            ...widget,
+            ...input,
+          };
+      };
+
+      return updatedWidget ?? widget;
+    });
+
+    await dashboard.updateOne(dashboard);
+    return dashboard;
   };
 };

@@ -1,7 +1,6 @@
 import { EWidgetType, IControlsWidget } from "@app/shared";
 import { ObjectType, Field, InputType } from "@nestjs/graphql";
 
-@InputType('ControlsWidgetInput')
 @ObjectType('ControlsWidget')
 export class ControlsWidgetObject implements IControlsWidget {
   @Field(type => String, { nullable: false, defaultValue: EWidgetType.CONTROLS })

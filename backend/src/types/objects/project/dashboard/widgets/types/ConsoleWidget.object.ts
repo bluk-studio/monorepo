@@ -1,7 +1,6 @@
 import { EWidgetType, IConsoleWidget } from "@app/shared";
 import { ObjectType, Field, InputType } from "@nestjs/graphql";
 
-@InputType('ConsoleWidgetInput')
 @ObjectType('ConsoleWidget')
 export class ConsoleWidgetObject implements IConsoleWidget {
   @Field(type => String, { nullable: false, defaultValue: EWidgetType.CONSOLE })

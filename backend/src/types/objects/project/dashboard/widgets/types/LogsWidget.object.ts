@@ -1,7 +1,6 @@
 import { EWidgetType, ILogsWidget } from "@app/shared";
 import { ObjectType, Field, InputType } from "@nestjs/graphql";
 
-@InputType('LogsWidgetInput')
 @ObjectType('LogsWidget')
 export class LogsWidgetObject implements ILogsWidget {
   @Field(type => String, { nullable: false, defaultValue: EWidgetType.LOGS })

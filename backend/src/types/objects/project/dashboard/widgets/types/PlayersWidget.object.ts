@@ -1,7 +1,6 @@
 import { EWidgetType, IPlayersWidget } from "@app/shared";
 import { ObjectType, Field, InputType } from "@nestjs/graphql";
 
-@InputType('PlayersWidgetInput')
 @ObjectType('PlayersWidget')
 export class PlayersWidgetObject implements IPlayersWidget {
   @Field(type => String, { nullable: false, defaultValue: EWidgetType.PLAYERS })

@@ -1,10 +1,10 @@
 import { Args, Context, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { CreateDashboardConfigInput, Profile, ProfileObject, Project, ProjectDashboardConfig, ProjectDashboardConfigObject, ProjectObject, UpdateDashboardConfigInput } from 'src/types';
+import { CreateDashboardConfigInput, Profile, ProfileObject, Project, ProjectDashboardConfig, ProjectDashboardConfigObject, ProjectObject, UpdateDashboardConfigInput, ControlsWidgetObject, UpdateControlsWidgetInput, UpdateConsoleWidgetInput, UpdatePlayersWidgetInput, UpdateLogsWidgetInput } from 'src/types';
 import { ProjectDashboardService, ProjectService } from 'src/modules/Project/services';
 import { HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { UserAuthGuard } from 'src/guards';
 import { ProfileService } from 'src/modules/Profile/services';
-import { IRequest, ISessionProject } from '@app/shared';
+import { EWidgetType, IRequest, ISessionProject } from '@app/shared';
 import { Types } from 'mongoose';
 
 @Resolver(of => ProjectDashboardConfigObject)
@@ -172,7 +172,78 @@ export class ProjectDashboardConfigResolver {
   };
 
   // mutation UpdateControlsWidget
+  @UseGuards(UserAuthGuard)
+  @Mutation(returns => ProjectDashboardConfigObject, {
+    name: 'UpdateControlsWidget'
+  })
+  public async updateControlsWidget(
+    @Args('dashboardId') dashboardId: string,
+    @Args('input') input: UpdateControlsWidgetInput,
+    @Context('user') profile: Profile,
+  ) {
+    // Updating this widget
+    return await this.service.updateWidget(
+      dashboardId,
+      EWidgetType.CONTROLS,
+      input,
+      profile,
+    );
+  };
+
   // mutation UpdateConsoleWidget
-  // mutation UpdateProfileWidget
+  @UseGuards(UserAuthGuard)
+  @Mutation(returns => ProjectDashboardConfigObject, {
+    name: 'UpdateConsoleWidget'
+  })
+  public async updateConsoleWidget(
+    @Args('dashboardId') dashboardId: string,
+    @Args('input') input: UpdateConsoleWidgetInput,
+    @Context('user') profile: Profile,
+  ) {
+    // Updating this widget
+    return await this.service.updateWidget(
+      dashboardId,
+      EWidgetType.CONSOLE,
+      input,
+      profile,
+    );
+  };
+
+  // mutation UpdatePlayersWidget
+  @UseGuards(UserAuthGuard)
+  @Mutation(returns => ProjectDashboardConfigObject, {
+    name: 'UpdatePlayersWidget'
+  })
+  public async updatePlayersWidget(
+    @Args('dashboardId') dashboardId: string,
+    @Args('input') input: UpdatePlayersWidgetInput,
+    @Context('user') profile: Profile,
+  ) {
+    // Updating this widget
+    return await this.service.updateWidget(
+      dashboardId,
+      EWidgetType.PLAYERS,
+      input,
+      profile,
+    );
+  };
+
   // mutation UpdateLogsWidget
+  @UseGuards(UserAuthGuard)
+  @Mutation(returns => ProjectDashboardConfigObject, {
+    name: 'UpdateLogsWidget'
+  })
+  public async updateLogsWidget(
+    @Args('dashboardId') dashboardId: string,
+    @Args('input') input: UpdateLogsWidgetInput,
+    @Context('user') profile: Profile,
+  ) {
+    // Updating this widget
+    return await this.service.updateWidget(
+      dashboardId,
+      EWidgetType.LOGS,
+      input,
+      profile,
+    );
+  };
 };
