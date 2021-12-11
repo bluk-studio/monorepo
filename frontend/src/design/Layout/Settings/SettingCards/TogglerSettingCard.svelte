@@ -15,12 +15,15 @@
     const enabled = toggled;
     toggled = null;
 
+    console.log('updater:');
+    console.log(card.updater);
     toggled = await card.updater({ type: ESettingCardType.TOGGLER, enabled }) as boolean;
   };
 
   // onMount event
   onMount(async () => {
     // Getting current state of this setting card
+    console.log(card.getter);
     toggled = (await card.getter()) as boolean;
   });
 

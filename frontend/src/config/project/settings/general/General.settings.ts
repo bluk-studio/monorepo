@@ -5,7 +5,7 @@ import { ESettingCardType, SettingCard } from "../SharedInterfaces.config";
 export const GeneralSettings: Array<SettingCard> = [
   // Online-mode
   {
-    type: 'TOGGLER' as ESettingCardType,
+    type: ESettingCardType.TOGGLER,
 
     title: 'Онлайн-режим',
     description: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore, a.',

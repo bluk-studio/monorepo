@@ -2,9 +2,9 @@
   // Importing modules
   import { CurrentProject } from 'src/stores';
   import { SimpleIcon, DashboardTiles } from 'src/design';
-import { InfoFooterButtons } from '$config/project';
-import { goto } from '$app/navigation';
-import { page } from '$app/stores';
+  import { InfoFooterButtons } from '$config/project';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
 
   $: project = $CurrentProject.project;
 </script>

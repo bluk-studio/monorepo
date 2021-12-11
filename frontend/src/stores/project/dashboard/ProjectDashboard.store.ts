@@ -10,6 +10,7 @@ import type { IUpdateProjectDashboardResponse } from "src/queries";
 // Store interface
 export interface IProjectDashboardStore {
   _id: Types.ObjectId,
+  projectId: Types.ObjectId | string;
   widgets: IDashboardWidget[],
 };
 
@@ -23,33 +24,59 @@ function _initialize() {
   function updateStore(store: Partial<IProjectDashboardStore>) {
     update((object) => {
       object._id = store._id,
+      object.projectId = store.projectId ?? object.projectId;
       object.widgets = store.widgets;
       return object;
+    });
+  };
+
+  // fetch function
+  function fetchDashboard(projectId: string) {
+    return new Promise((resolve, reject) => {
+      const query = client.query<ICurrentDashboardConfigData>(CurrentDashboardConfig, { variables: { projectId } })
+
+      // Refetching
+      query.refetch();
+
+      // Making new request
+      query.subscribe((response) => {
+        // Waiting for response to finish loading
+        if (response.loading) return;
+
+        // Checking response
+        if (response.error) {
+          // +todo
+          // error handling and visialization
+          console.error('graphql project query error', response.error);
+          reject({ error: true });
+        } else {
+          updateStore({ ...response.data.CurrentProjectDashboard, projectId });
+          resolve(response);
+        };  
+      });
     });
   };
 
   return {
     subscribe,
 
-    // fetchDashboardConfig
-    async fetch(projectId: string) {
-      return new Promise((resolve, reject) => {
-        client.query<ICurrentDashboardConfigData>(CurrentDashboardConfig, { variables: { projectId } }).subscribe((response) => {
-          // Waiting for response to finish loading
-          if (response.loading) return;
-  
-          // Checking response
-          if (response.error) {
-            // +todo
-            // error handling and visialization
-            console.error('graphql project query error', response.error);
-            reject({ error: true });
-          } else {
-            updateStore(response.data.CurrentProjectDashboard);
-            resolve(response);
-          };  
+    async refetch() {
+      console.log('refetch');
+      const dashboard: Partial<IProjectDashboardStore> = await new Promise((resolve) => {
+        subscribe((object) => {
+          resolve(object);
         });
       });
+
+      console.log(dashboard);
+      // Fetching
+      return await fetchDashboard(String(dashboard.projectId));
+    },
+
+    // fetchDashboardConfig
+    async fetch(projectId: string) {
+      console.log('fetch dashboard');
+      return await fetchDashboard(projectId);
     },
 
     // updateLayout
