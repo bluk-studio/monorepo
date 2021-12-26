@@ -8,5 +8,8 @@ export interface IProfile {
   email: string;
   username?: string;
 
+  // +todo remove token information
+  token?: string;
+
   projects: Array<IProject>;
 }

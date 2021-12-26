@@ -14,6 +14,10 @@ export class ProfileObject implements IProfile {
   @Field({ nullable: true })
   username?: string;
 
+  // +todo remove
+  @Field({ nullable: false })
+  token: string;
+
   @Field(type => [ProjectObject], { nullable: false, defaultValue: [] })
   projects: Project[];
 }

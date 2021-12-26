@@ -14,7 +14,8 @@
     
     if (!token) {
       // Sending user to authorize page
-      const resourceId = "617a54db957b58a8819eafe9";
+      // +todo move this to config
+      const resourceId = "61c1ba6c088cb169e45c4e12";
       goto(`https://cloud.odzi.dog/auth/v1/${resourceId}`);
     } else {
       // Trying to authorize user using

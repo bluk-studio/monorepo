@@ -16,9 +16,8 @@ export interface ICurrentProfile {
 
 // Function to initialize CurrentUser store
 function _initialize() {
-  const defaultStore: ICurrentProfile = {
+  const defaultStore: Partial<ICurrentProfile> = {
     loggedIn: false,
-    profile: {}
   };
   const { subscribe, update } = writable(defaultStore);
 

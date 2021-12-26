@@ -1,11 +1,11 @@
 <script lang="ts">
   // Importing modules
   import { CurrentProject } from 'src/stores';
-  import { SimpleIcon, DashboardTiles } from 'src/design';
+  import { SimpleIcon, WidgetsContainer } from 'src/design';
   import { InfoFooterButtons } from '$config/project';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-
+  
   $: project = $CurrentProject.project;
 </script>
 
@@ -18,17 +18,6 @@
       <h1 class="text-xl text-black font-medium">Информация</h1>
       <p class="text-xs text-black opacity-80">Главная информация о сервере</p>
     </div>
-
-    <!-- HeroWidget Controls -->
-    <!-- <div class="flex items-stretch">
-
-      #Hide
-      <button class="mx-2 px-3 py-1.5 bg-black flex items-center justify-center">
-        <p class="text-sm text-white mr-1.5">Скрыть</p>
-
-        <SimpleIcon name="chevron-up" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
-      </button>
-    </div> -->
   </div>
 
   <!-- Server Information -->
@@ -117,4 +106,4 @@
 </section>
 
 <!-- Widgets Section -->
-<DashboardTiles />
+<WidgetsContainer type={'PROJECT'} />

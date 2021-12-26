@@ -39,7 +39,15 @@ export const Categories: Array<ICategory> = [
 
     title: 'Проект',
     description: 'Все страницы, связанные с текущим проектом',
-  }
+  },
+
+  // Marketplace
+  {
+    id: 'marketplace',
+
+    title: 'Маркетплейс',
+    description: 'Все аддоны, ноды и подобное'
+  },
 ]
 
 export const Pages: Array<IPage> = [
@@ -66,7 +74,37 @@ export const Pages: Array<IPage> = [
 
     icon: 'layers',
     title: 'Создать сервер',
-    description: 'Создать новый сервер'
+    description: 'Создайте новый бесплатный сервер'
+  },
+
+  // Editor
+  {
+    url: '/app/editor',
+    regex: /\/app\/editor/,
+    checkName: 'alwaysShow',
+    category: 'basic',
+
+    icon: 'code',
+    title: 'Редактор',
+    description: 'Главное место создания и модернизации всего контента',
+  },
+
+
+  // 
+  // Marketplace related
+  // 
+
+  // Explore page
+
+  {
+    url: '/app/marketplace',
+    regex: /\/app\/marketplace\/(explore)/,
+    checkName: 'alwaysShow',
+    category: 'marketplace',
+
+    icon: 'shopping-bag',
+    title: 'Маркетплейс',
+    description: 'Самое популярное из маркетплейса',
   },
 
   // 

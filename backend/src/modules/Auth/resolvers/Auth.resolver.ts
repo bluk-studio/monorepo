@@ -12,7 +12,12 @@ export class AuthResolver {
   // query me
   @Query((returns) => ProfileObject)
   @UseGuards(UserAuthGuard)
-  async me(@Context('user') user: IProfile): Promise<Profile> {
+  async me(
+    @Context('user') user: IProfile,
+    @Context('req') req: IRequest,  
+  ): Promise<Profile> {
+    // +todo remove token from this query
+    user.token = req?.session?.token;
     return user;
   }
 

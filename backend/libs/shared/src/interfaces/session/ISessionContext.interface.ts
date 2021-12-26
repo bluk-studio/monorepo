@@ -1,13 +1,16 @@
-import { IProfile } from '@app/shared';
+import { EDashboardType, IProfile } from '@app/shared';
 
-export interface ISessionProject {
+export interface ISessionResource {
   _id: string;
-  activeDashboardId?: string
+  dashboard?: {
+    type: EDashboardType,
+    activeId: string
+  },
 };
 
 // Exporting ISessionContext interface
 export interface ISessionContext {
   token: string;
-  projects?: ISessionProject[],
+  resources?: ISessionResource[],
   lastAuthorizedUser?: string;
 }

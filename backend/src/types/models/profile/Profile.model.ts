@@ -11,6 +11,9 @@ export class Profile implements Omit<IProfile, 'projects'> {
   @Prop({ required: true, unique: true })
   email: string;
 
+  // +todo remove
+  token?: string;
+
   @Prop({ required: false, unique: false })
   username?: string;
 }

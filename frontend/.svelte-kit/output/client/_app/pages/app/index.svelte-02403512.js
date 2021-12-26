@@ -1,0 +1,1 @@
+import{S as s,i as n,s as t,z as c}from"../../chunks/vendor-adcc401c.js";import{g as o}from"../../chunks/navigation-20968cc5.js";import"../../chunks/singletons-bb9012b7.js";function r(s){return c((()=>{o("/app/selector")})),[]}export default class extends s{constructor(s){super(),n(this,s,r,null,t,{})}}

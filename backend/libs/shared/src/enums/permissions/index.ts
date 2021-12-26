@@ -7,4 +7,7 @@ export enum EPermission {
 
   // Server Settings
   UPDATE_SERVER_SETTINGS = 'UPDATE_SERVER_SETTINGS',
-}
+
+  // Worker State
+  SUBSCRIBE_TO_WORKER_STATE = 'SUBSCRIBE_TO_WORKER_STATE',
+};

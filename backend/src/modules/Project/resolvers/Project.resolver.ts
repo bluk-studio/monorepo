@@ -14,12 +14,18 @@ import {
   ProjectObject,
 } from 'src/types';
 import { ProjectService } from 'src/modules/Project/services';
-import { UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { UserAuthGuard } from 'src/guards';
+import { PubSub } from 'graphql-subscriptions';
 
 @Resolver((of) => ProjectObject)
 export class ProjectResolver {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(
+    private readonly projectService: ProjectService,
+    
+    @Inject('PUB_SUB')
+    private readonly pubSub: PubSub,
+  ) {}
 
   // query project by id
   @Query((type) => ProjectObject, {
@@ -67,6 +73,8 @@ export class ProjectResolver {
     @Args('projectId') projectId: string,
     @Context('user') profile: Profile
   ) {
+    // +todo pubsub
+
     return await this.projectService.delete(projectId, profile);
   };
 

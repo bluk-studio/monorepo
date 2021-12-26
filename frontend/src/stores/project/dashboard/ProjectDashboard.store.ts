@@ -1,16 +1,22 @@
 import { writable } from "svelte/store";
 import { client } from 'src/stores/graphql';
-import { CurrentDashboardConfig, UpdateProjectDashboard } from 'src/queries';
+import { AllProjectWidgets, CurrentDashboardConfig, UpdateDashboard } from 'src/queries';
+import { CurrentProject } from "src/stores/project/CurrentProject.store";
 
 import type { Types } from "mongoose";
 import type { ICurrentDashboardConfigData } from 'src/queries';
-import type { IDashboardWidget } from '@app/shared';
-import type { IUpdateProjectDashboardResponse } from "src/queries";
+import type { EDashboardType, IDashboardWidget } from '@app/shared';
+import type { IUpdateDashboardResponse } from "src/queries";
+import type { ICurrentProjectStore } from "src/stores/project/CurrentProject.store";
 
 // Store interface
 export interface IProjectDashboardStore {
-  _id: Types.ObjectId,
-  projectId: Types.ObjectId | string;
+  // Dashboard information
+  dashboardId: string,
+
+  title: string,
+
+  // Widgets information
   widgets: IDashboardWidget[],
 };
 
@@ -21,19 +27,26 @@ function _initialize() {
   };
   const { subscribe, update } = writable(defaultStore);
 
-  function updateStore(store: Partial<IProjectDashboardStore>) {
-    update((object) => {
-      object._id = store._id,
-      object.projectId = store.projectId ?? object.projectId;
-      object.widgets = store.widgets;
-      return object;
-    });
-  };
-
   // fetch function
-  function fetchDashboard(projectId: string) {
+  async function fetchDashboard() {
+    // Fetching current project dashboard;
+    const project: Partial<ICurrentProjectStore> = await new Promise((resolve) => {
+      CurrentProject.subscribe((project) => {
+        resolve(project);
+      });
+    });
+
+    // +todo error handling
+    if (!project?.project?._id) return;
+
     return new Promise((resolve, reject) => {
-      const query = client.query<ICurrentDashboardConfigData>(CurrentDashboardConfig, { variables: { projectId } })
+      const query = client.query<ICurrentDashboardConfigData>(CurrentDashboardConfig(AllProjectWidgets), { 
+        variables: 
+          { 
+            resourceId: project.project._id,
+            resourceType: 'PROJECT' as EDashboardType, 
+          },
+        });
 
       // Refetching
       query.refetch();
@@ -50,7 +63,14 @@ function _initialize() {
           console.error('graphql project query error', response.error);
           reject({ error: true });
         } else {
-          updateStore({ ...response.data.CurrentProjectDashboard, projectId });
+          update((object) => {
+            object.dashboardId = String(response.data.CurrentDashboard._id);
+            object.widgets = response.data?.CurrentDashboard.widgets;
+
+            object.title = response.data?.CurrentDashboard.name;
+
+            return object;
+          });
           resolve(response);
         };  
       });
@@ -61,29 +81,39 @@ function _initialize() {
     subscribe,
 
     async refetch() {
-      console.log('refetch');
       const dashboard: Partial<IProjectDashboardStore> = await new Promise((resolve) => {
         subscribe((object) => {
           resolve(object);
         });
       });
 
-      console.log(dashboard);
       // Fetching
-      return await fetchDashboard(String(dashboard.projectId));
+      return await fetchDashboard();
     },
 
     // fetchDashboardConfig
-    async fetch(projectId: string) {
-      console.log('fetch dashboard');
-      return await fetchDashboard(projectId);
+    async fetch() {
+      // Fetching 
+
+      return await fetchDashboard();
     },
 
     // updateLayout
-    async updateLayout(dashboardId: string, widgets: IDashboardWidget[]) {
-      const response = (await client.mutate(UpdateProjectDashboard, { 
+    async update(widgets: IDashboardWidget[]) {
+      // Fetching current dashboard
+      const dashboard: Partial<IProjectDashboardStore> = await new Promise((resolve) => {
+        subscribe((object) => {
+          resolve(object);
+        });
+      });
+
+      // +todo error handling
+      if (!dashboard.dashboardId) return;
+
+      // Updating
+      const response = (await client.mutate(UpdateDashboard, { 
         variables: {
-          dashboardId,
+          dashboardId: dashboard.dashboardId,
           input: {
             widgets: widgets.map((widget) => {
               return {
@@ -96,9 +126,9 @@ function _initialize() {
             }),
           }
         },
-      })) as IUpdateProjectDashboardResponse;
+      })) as IUpdateDashboardResponse;
 
-      return response.data.UpdateProjectDashboard;
+      return response.data.UpdateDashboard;
     },
   }
 };

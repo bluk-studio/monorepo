@@ -19,7 +19,7 @@ import 'src/types/enums';
     // GraphQLModule
     GraphQLModule.forRoot({
       subscriptions: {
-        'graphql-ws': true
+        "subscriptions-transport-ws": true,
       },
       autoSchemaFile: 'schema.gql',
       context: ({ req }) => ({ req }),

@@ -6,6 +6,7 @@ type Profile {
   _id: String!
   email: String!
   username: String
+  token: String!
   projects: [Project!]!
 }
 
@@ -47,6 +48,7 @@ enum Permission {
   STOP
   DELETE_PROJECT
   UPDATE_SERVER_SETTINGS
+  SUBSCRIBE_TO_WORKER_STATE
 }
 
 type MemberPermissions {
@@ -72,37 +74,94 @@ enum MemberRole {
   DEVELOPER
 }
 
-type ProjectDashboardConfig {
+type WorkerRegion {
+  id: String!
+  name: String!
+  location: String!
+}
+
+type WorkerState {
+  state: ProjectWorkerState!
+  region: WorkerRegion
+  address: String
+  project: Project!
+  plugins: [Plugin!]!
+}
+
+enum ProjectWorkerState {
+  DEAD
+  ASSIGNING
+  STARTING
+  RUNNING
+}
+
+type PluginNode {
+  code: NodeCode!
+  inputs: [NodeInput!]!
+  outputs: [NodeOutput!]!
+}
+
+type NodeCode {
+  raw: String!
+}
+
+type NodeInput {
+  _id: String!
+  id: String!
+  type: String!
+  color: String
+  description: String
+  name: String
+}
+
+type NodeOutput {
+  _id: String!
+  type: String!
+  color: String
+  description: String
+  name: String
+}
+
+type Plugin {
+  name: String!
+  description: String
+  public: Boolean!
+  creator: Profile!
+  nodes: [PluginNode!]!
+}
+
+type DashboardConfig {
   """System ID of ProjectDashboardConfig instance"""
   _id: String!
 
-  """Display name of ProjectDashboardConfig"""
+  """
+  Type of this DashboardConfig (either PROJECT, CODE_EDITOR or VISUAL_EDITOR or else...)
+  """
+  type: EDashboardType!
+
+  """Display name of DashboardConfig"""
   name: String!
+
+  """Project instance of this DashboardConfig (type: PROJECT)"""
   project: Project!
+
+  """Profile instance, that's assosiated with this DashboardConfig"""
   profile: Profile!
 
-  """Array of DashboardWidget's assosiated with this ProjectDashboardConfig"""
+  """Array of DashboardWidget's assosiated with this DashboardConfig"""
   widgets: [DashboardWidget!]!
 }
 
-union DashboardWidget = ControlsWidget | ConsoleWidget | PlayersWidget | LogsWidget
-
-type ControlsWidget {
-  type: String!
-  enabled: Boolean!
-
-  """X coordinate of DashboardWidget's position"""
-  x: Float!
-
-  """Y coordinate of DashboardWidget's position"""
-  y: Float!
-
-  """DashboardWidget's width"""
-  height: Float!
-
-  """DashboardWidget's height"""
-  width: Float!
+"""
+DashboardConfig Type (either PROJECT, CODE_EDITOR, VISUAL_EDITOR or similar...)
+"""
+enum EDashboardType {
+  PROJECT
+  CODE_EDITOR
+  VISUAL_EDITOR
 }
+
+union DashboardWidget = ControlsWidget | ConsoleWidget | PlayersWidget | LogsWidget
 
 type ConsoleWidget {
   type: String!
@@ -121,7 +180,7 @@ type ConsoleWidget {
   width: Float!
 }
 
-type PlayersWidget {
+type ControlsWidget {
   type: String!
   enabled: Boolean!
 
@@ -155,6 +214,23 @@ type LogsWidget {
   width: Float!
 }
 
+type PlayersWidget {
+  type: String!
+  enabled: Boolean!
+
+  """X coordinate of DashboardWidget's position"""
+  x: Float!
+
+  """Y coordinate of DashboardWidget's position"""
+  y: Float!
+
+  """DashboardWidget's width"""
+  height: Float!
+
+  """DashboardWidget's height"""
+  width: Float!
+}
+
 type Query {
   me: Profile!
 
@@ -163,9 +239,9 @@ type Query {
 
   """Fetch all ProjectObject's of a current profile"""
   ProfileProjects: [Project!]!
-  ProjectDashboard(dashboardId: String!): ProjectDashboardConfig!
-  ProjectDashboardByProfile(projectId: String): [ProjectDashboardConfig!]!
-  CurrentProjectDashboard(projectId: String!): ProjectDashboardConfig!
+  DashboardById(id: String!): DashboardConfig!
+  DashboardByProfileInResource(id: String!, type: EDashboardType!): [DashboardConfig!]!
+  CurrentDashboard(resourceId: String!, resourceType: EDashboardType!): DashboardConfig
 }
 
 type Mutation {
@@ -176,14 +252,14 @@ type Mutation {
 
   """Deletes Project with passed _id and returns it"""
   DeleteProject(projectId: String!): Project!
-  SetCurrentProjectDashboard(dashboardId: String!, projectId: String!): ProjectDashboardConfig!
-  CreateProjectDashboard(projectId: String!, input: CreateDashboardConfigInput!): ProjectDashboardConfig!
-  UpdateProjectDashboard(input: UpdateDashboardConfigInput!, dashboardId: String!): ProjectDashboardConfig!
-  UpdateControlsWidget(input: UpdateControlsWidgetInput!, dashboardId: String!): ProjectDashboardConfig!
-  UpdateConsoleWidget(input: UpdateConsoleWidgetInput!, dashboardId: String!): ProjectDashboardConfig!
-  UpdatePlayersWidget(input: UpdatePlayersWidgetInput!, dashboardId: String!): ProjectDashboardConfig!
-  UpdateLogsWidget(input: UpdateLogsWidgetInput!, dashboardId: String!): ProjectDashboardConfig!
   UpdateServerSettings(input: UpdateServerSettingsInput!, projectId: String!): ProjectSettings!
+  CreateDashboard(resourceId: String!, resourceType: EDashboardType!, input: CreateProjectInput!): DashboardConfig!
+  UpdateDashboard(input: UpdateDashboardConfigInput!, dashboardId: String!): DashboardConfig!
+  SetCurrentDashboard(dashboardId: String!, resourceId: String!): DashboardConfig!
+  UpdateControlsWidget(input: UpdateControlsWidgetInput!, dashboardId: String!): ControlsWidget!
+  UpdateConsoleWidget(input: UpdateConsoleWidgetInput!, dashboardId: String!): ConsoleWidget!
+  UpdatePlayersWidget(input: UpdatePlayersWidgetInput!, dashboardId: String!): PlayersWidget!
+  UpdateLogsWidget(input: UpdateLogsWidgetInput!, dashboardId: String!): LogsWidget!
 }
 
 input CreateProjectInput {
@@ -191,8 +267,10 @@ input CreateProjectInput {
   description: String
 }
 
-input CreateDashboardConfigInput {
-  name: String!
+input UpdateServerSettingsInput {
+  whitelist: Boolean
+  onlineMode: Boolean
+  address: String
 }
 
 input UpdateDashboardConfigInput {
@@ -232,8 +310,6 @@ input UpdateLogsWidgetInput {
   enabled: Boolean
 }
 
-input UpdateServerSettingsInput {
-  whitelist: Boolean
-  onlineMode: Boolean
-  address: String
+type Subscription {
+  CurrentWorkerState(token: String!, projectId: String!): WorkerState!
 }

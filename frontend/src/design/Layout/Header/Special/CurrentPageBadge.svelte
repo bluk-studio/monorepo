@@ -93,22 +93,23 @@
 
   <!-- Popover -->
   { #if popoverVisible }
-    <div id="currentPageBadge-popover" transition:slide style="width: { $AvailablePages.list.length >= 6 ? '360%' : '180%' }; margin-top: -2px;" class="z-20 overflow-x-auto w-full absolute bg-gray-100 border-2 border-black pt-3 pb-2">
+    <div id="currentPageBadge-popover" transition:slide style="width: { $AvailablePages.list.length >= 4 ? '360%' : '180%' }; margin-top: -2px;" class="z-20 w-full overflow-hidden overflow-x-auto absolute bg-gray-100 border-2 border-black pt-3 pb-2">
       <!-- Header -->
-      { #if $AvailablePages.list.length < 6 }
+      { #if $AvailablePages.list.length < 4 }
         <div class="w-full px-2">
           <h1 class="text-md text-black font-medium">Страницы</h1>
           <p class="text-xs text-black opacity-80">Отображаем только доступные вам страницы</p>
         </div>
       { /if }
 
-      { #if $AvailablePages.list.length >= 6 }
+      { #if $AvailablePages.list.length >= 4 }
         <!-- List Categories -->
-        <div class="w-full flex items-start justify-center">
+        <div id="categoryContainer" class="w-max flex">
           { #each Categories as category }
             { #if $AvailablePages.list.filter((x) => x.category == category.id).length > 0 }
               <!-- Show this category -->
-              <div class="w-auto relative">
+              <!-- +todo responsive category container width -->
+              <div style="width: { "340" }px" class="relative">
                 <!-- Header -->
                 <div class="w-full px-2">
                   <h1 class="text-md text-black font-medium">{ category.title }</h1>

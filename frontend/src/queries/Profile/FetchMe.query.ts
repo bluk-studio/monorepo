@@ -8,12 +8,14 @@ export interface IFetchMeData {
 
 export type IFetchMeResponse = IExecutionResult<IFetchMeData>;
 
+// +todo remove token from this request
 // Exporting query itself
 export const FetchMe = gql`
   query me {
     me {
       _id
       email
+      token
     }
   }
 `;

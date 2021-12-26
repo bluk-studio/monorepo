@@ -9,7 +9,7 @@ export class ServerSettings implements IServerSettings {
   @Prop({ required: true, default: false })
   whitelist: boolean;
 
-  @Prop({ required: false })
+  @Prop({ required: false, unique: true })
   address: string;
 };
 

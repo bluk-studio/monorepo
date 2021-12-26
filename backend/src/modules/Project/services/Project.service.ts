@@ -32,13 +32,19 @@ export class ProjectService {
         ? projectId
         : new Types.ObjectId(projectId);
 
-    return await this.projectModel.findOne({ _id });
-  }
+    return await this._serialize(await this.projectModel.findOne({ _id }));
+  };
+
+  // public fetchByAddress
+  public async fetchByAddress(address: string): Promise<ProjectDocument> {
+    const project = await this.projectModel.findOne({ "settings.server.address": address });
+    return await this._serialize(project);
+  };
 
   // public fetchProfileProjects
   public async fetchProfileProjects(
     profileId: string | Types.ObjectId,
-  ): Promise<Array<Project>> {
+  ): Promise<Array<ProjectDocument>> {
     const _profileId =
       profileId instanceof Types.ObjectId
         ? profileId
@@ -46,14 +52,37 @@ export class ProjectService {
 
     // Fetching projects
     const projectMemberInstances = await this.projectMemberModel.find({ uid: _profileId });
-    const projects: Array<Project> = [];
+    const projects: Array<ProjectDocument> = [];
     for (const instance of projectMemberInstances) {
       const project = await this.projectModel.findOne({ _id: instance.pid });
 
       if (project) projects.push(project);
     };
 
-    return projects;
+    // Serializing project object
+    const serializedProjects: ProjectDocument[] = [];
+    for (const project of projects) {
+      serializedProjects.push(await this._serialize(project));
+    };
+
+    return serializedProjects;
+  };
+
+  // private _serialize
+  private async _serialize(project: ProjectDocument): Promise<ProjectDocument> {
+    // Checking if this project have server address
+    if (!project.settings?.server?.address) {      
+      // Generating random address for this project
+      const address = this._randomIdentifier(10);
+      // +todo wtf is this
+      project.settings.server.address = address;
+
+      // Updating project
+      const projectDocument = await this.projectModel.findOne({ _id: project._id });
+      await projectDocument.updateOne(project);
+    };
+
+    return project;
   };
 
   // public fetchMembers
@@ -79,7 +108,7 @@ export class ProjectService {
       EMemberRole.OWNER,
     );
 
-    return project;
+    return await this._serialize(project);
   };
 
   // public delete
@@ -113,5 +142,18 @@ export class ProjectService {
     };
 
     return project;
+  };
+
+  // private _randomIdentifier
+  // +todo move this to HelperService (probably)
+  private _randomIdentifier(length = 12): string {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    };
+
+    return result;
   };
 }

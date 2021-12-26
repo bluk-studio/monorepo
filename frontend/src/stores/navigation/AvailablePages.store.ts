@@ -68,7 +68,10 @@ function _initialize() {
         if (project?.current?._id != null) {
           available.push(page);
         };
-      }
+      // check alwaysShow
+      } else if (page.checkName == 'alwaysShow') {
+        available.push(page);
+      };
     });
 
     updateList(available);

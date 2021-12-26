@@ -30,10 +30,16 @@
 	"dependencies": {
 		"@apollo/client": "^3.4.7",
 		"@sveltejs/adapter-vercel": "^1.0.0-next.27",
+		"browser-or-node": "^2.0.0",
 		"feather-icon": "^0.1.0",
 		"feather-icons": "^4.28.0",
 		"graphql": "^15.5.1",
+		"graphql-ws": "^5.5.5",
+		"monaco-editor": "^0.31.1",
+		"subscriptions-transport-ws": "^0.9.19",
 		"svelte-apollo-client": "^0.1.4",
-		"svelte-grid": "^5.1.0"
+		"svelte-grid": "^5.1.0",
+		"websocket": "^1.0.34",
+		"ws": "^8.3.0"
 	}
 }

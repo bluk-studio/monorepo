@@ -1,0 +1,10 @@
+todo:
+
+- Add MovableDashboardWidgetInput
+- Add Updatable{EWidgetType}WidgetInput
+- Re-write widget update and movable widget update systems
+- Add widget settings functionality to settings page
+- Add functionality to disable or enable widgets
+- Fix bug with uncleanable ProfileProjects store after project deletion
+- Add two different categories to settings page: members and project settings
+- Rename general settings category to Server Settings

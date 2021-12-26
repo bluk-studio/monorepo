@@ -30,6 +30,6 @@ export class UserAuthGuard implements CanActivate {
   }
 
   private async validateToken(req: IRequest) {
-    return await this.authService.authorize(req.session.token);
+    return await this.authService.authorize(req?.session?.token);
   }
 }

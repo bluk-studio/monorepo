@@ -1,5 +1,5 @@
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProfileSchema, ProjectDashboardConfigSchema, ProjectMemberSchema, ProjectSchema } from 'src/types';
+import { ProfileSchema, DashboardConfigSchema, ProjectMemberSchema, ProjectSchema, RawPluginSchema } from 'src/types';
 
 export const GlobalModels = MongooseModule.forFeature([
   // Common models
@@ -18,7 +18,13 @@ export const GlobalModels = MongooseModule.forFeature([
     schema: ProjectMemberSchema,
   },
   {
-    name: 'ProjectDashboardConfig',
-    schema: ProjectDashboardConfigSchema,
+    name: 'DashboardConfig',
+    schema: DashboardConfigSchema,
+  },
+
+  // Plugins
+  {
+    name: 'RawPlugin',
+    schema: RawPluginSchema,
   }
 ]);

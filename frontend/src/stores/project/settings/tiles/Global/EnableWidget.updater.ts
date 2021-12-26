@@ -3,33 +3,10 @@ import type { TogglerUpdaterPayload } from "$config/project";
 import type { EWidgetType } from "@app/shared";
 import { ProjectDashboard } from "src/stores/project";
 import { client } from 'src/stores/graphql';
-
-// Importing queries
-import { ToggleConsoleWidget, ToggleControlsWidget, TogglePlayersWidget, ToggleLogsWidget } from "src/queries";
+import { ToggleWidgetQuery } from "src/queries/Dashboard/ToggleWidget.query";
 
 // Exporting EnableWidget updater
 export function EnableWidget(type: EWidgetType) {
-  // Determining which query we need to use
-  let query;
-  switch (type) {
-    case 'PLAYERS':
-      query = TogglePlayersWidget;
-      break;
-    case 'CONSOLE':
-      query = ToggleConsoleWidget;
-      break;
-    case 'CONTROLS':
-      query = ToggleControlsWidget;
-      break;
-    case 'LOGS':
-      query = ToggleLogsWidget;
-      break;
-    default:
-      break;
-  };
-  // +todo erro handling
-  if (query == null) return;
-
   // Returning function
   return function(input: TogglerUpdaterPayload): Promise<boolean> {
     return new Promise(async (resolve) => {
@@ -43,12 +20,12 @@ export function EnableWidget(type: EWidgetType) {
       }));
 
       // Updating
-      const response = (await client.mutate(query, { 
+      await client.mutate(ToggleWidgetQuery(type[0] + type.slice(1, type.length).toLowerCase()), { 
         variables: {
           dashboardId,
           value: !input.enabled,
         },
-      }));
+      })
   
       // Updating state of this widget
       // in store
