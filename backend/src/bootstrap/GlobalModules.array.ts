@@ -6,3 +6,5 @@ export * from 'src/modules/Plugins/module';
 export * from 'src/modules/Region/module';
 export * from 'src/modules/ServerCore/module';
 export * from 'src/modules/Dashboard/module';
+export * from 'src/modules/Editor/module';
+export * from 'src/modules/Session/module';

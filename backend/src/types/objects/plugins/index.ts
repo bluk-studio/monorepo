@@ -1,2 +1,2 @@
-export * from './Plugin.object';
-export * from './nodes';
+export * from './MarketplaceInformation.object';
+export * from './RawPlugin';

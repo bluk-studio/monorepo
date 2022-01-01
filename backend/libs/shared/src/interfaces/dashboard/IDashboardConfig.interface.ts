@@ -9,7 +9,6 @@ export interface IDashboardConfig {
   type: EDashboardType;
   name: string;
 
-  rid: Types.ObjectId;
   uid: Types.ObjectId;
 
   widgets: IDashboardWidget[];

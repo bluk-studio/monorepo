@@ -1,7 +1,8 @@
 import { IWorkerState, EWorkerState } from '@app/shared';
 import { ObjectType, Field } from '@nestjs/graphql';
+import { Project } from 'src/types';
 
-import { PluginObject, ProjectObject } from '..';
+import { ProjectObject } from '..';
 import { WorkerRegionObject } from './region';
 
 @ObjectType('WorkerState')
@@ -16,8 +17,8 @@ export class WorkerStateObject implements IWorkerState {
   address?: string;
 
   @Field(type => ProjectObject, { nullable: false })
-  project: ProjectObject;
+  project: Project;
 
-  @Field(type => [PluginObject], { nullable: false, defaultValue: [] })
-  plugins: PluginObject[];
+  // @Field(type => [PluginObject], { nullable: false, defaultValue: [] })
+  // plugins: PluginObject[];
 };

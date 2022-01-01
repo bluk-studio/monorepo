@@ -49,6 +49,11 @@ enum Permission {
   DELETE_PROJECT
   UPDATE_SERVER_SETTINGS
   SUBSCRIBE_TO_WORKER_STATE
+  SUBSCRIBE_TO_EDITOR_SESSION
+  ADD_PLUGIN_TO_PROJECT
+  FETCH_RAW_PLUGINS
+  UPDATE_RAW_PLUGINS
+  UPDATE_RAW_PLUGIN_CODE
 }
 
 type MemberPermissions {
@@ -85,7 +90,6 @@ type WorkerState {
   region: WorkerRegion
   address: String
   project: Project!
-  plugins: [Plugin!]!
 }
 
 enum ProjectWorkerState {
@@ -95,39 +99,27 @@ enum ProjectWorkerState {
   RUNNING
 }
 
-type PluginNode {
-  code: NodeCode!
-  inputs: [NodeInput!]!
-  outputs: [NodeOutput!]!
+type PluginMarketplaceInformation {
+  """Do we need to display this plugin in Marketplace?"""
+  display: Boolean!
 }
 
-type NodeCode {
-  raw: String!
-}
-
-type NodeInput {
+type RawPlugin {
   _id: String!
-  id: String!
-  type: String!
-  color: String
-  description: String
-  name: String
-}
 
-type NodeOutput {
-  _id: String!
-  type: String!
-  color: String
-  description: String
-  name: String
-}
+  """RawPlugin's title"""
+  title: String!
 
-type Plugin {
-  name: String!
+  """RawPlugin's description"""
   description: String
-  public: Boolean!
+
+  """Marketplace information"""
+  marketplace: PluginMarketplaceInformation!
+
+  """JavaScript code of this RawPlugin"""
+  code: [String!]!
   creator: Profile!
-  nodes: [PluginNode!]!
+  project: Project
 }
 
 type DashboardConfig {
@@ -141,9 +133,6 @@ type DashboardConfig {
 
   """Display name of DashboardConfig"""
   name: String!
-
-  """Project instance of this DashboardConfig (type: PROJECT)"""
-  project: Project!
 
   """Profile instance, that's assosiated with this DashboardConfig"""
   profile: Profile!
@@ -161,7 +150,24 @@ enum EDashboardType {
   VISUAL_EDITOR
 }
 
-union DashboardWidget = ControlsWidget | ConsoleWidget | PlayersWidget | LogsWidget
+union DashboardWidget = ControlsWidget | ConsoleWidget | PlayersWidget | LogsWidget | CodeEditorWidget
+
+type CodeEditorWidget {
+  type: String!
+  enabled: Boolean!
+
+  """X coordinate of DashboardWidget's position"""
+  x: Float!
+
+  """Y coordinate of DashboardWidget's position"""
+  y: Float!
+
+  """DashboardWidget's width"""
+  height: Float!
+
+  """DashboardWidget's height"""
+  width: Float!
+}
 
 type ConsoleWidget {
   type: String!
@@ -239,9 +245,12 @@ type Query {
 
   """Fetch all ProjectObject's of a current profile"""
   ProfileProjects: [Project!]!
+  RawPluginById(pluginId: String!): RawPlugin!
+  RawPluginsByProfile(includeProjectPlugins: Boolean): [RawPlugin!]!
+  RawPluginsByProject(projectId: String!): [RawPlugin!]!
   DashboardById(id: String!): DashboardConfig!
-  DashboardByProfileInResource(id: String!, type: EDashboardType!): [DashboardConfig!]!
-  CurrentDashboard(resourceId: String!, resourceType: EDashboardType!): DashboardConfig
+  DashboardsByType(type: EDashboardType!): [DashboardConfig!]!
+  CurrentDashboard(resourceId: String!, dashboardType: EDashboardType!): DashboardConfig
 }
 
 type Mutation {
@@ -253,7 +262,10 @@ type Mutation {
   """Deletes Project with passed _id and returns it"""
   DeleteProject(projectId: String!): Project!
   UpdateServerSettings(input: UpdateServerSettingsInput!, projectId: String!): ProjectSettings!
-  CreateDashboard(resourceId: String!, resourceType: EDashboardType!, input: CreateProjectInput!): DashboardConfig!
+  AddPluginToProject(pluginId: String!, pluginType: EPluginType!, projectId: String!): Project!
+  CreateRawPlugin(addToProject: String, input: PluginCreateInput!): RawPlugin!
+  UpdateRawPluginCode(changes: [ContentChangeInput!]!, pluginId: String!): RawPlugin!
+  CreateDashboard(dashboardType: EDashboardType!, input: CreateProjectInput!): DashboardConfig!
   UpdateDashboard(input: UpdateDashboardConfigInput!, dashboardId: String!): DashboardConfig!
   SetCurrentDashboard(dashboardId: String!, resourceId: String!): DashboardConfig!
   UpdateControlsWidget(input: UpdateControlsWidgetInput!, dashboardId: String!): ControlsWidget!
@@ -271,6 +283,23 @@ input UpdateServerSettingsInput {
   whitelist: Boolean
   onlineMode: Boolean
   address: String
+}
+
+"""Plugin type"""
+enum EPluginType {
+  RAW_PLUGIN
+  VISUAL_PLUGIN
+  NODE
+}
+
+input PluginCreateInput {
+  name: String!
+  description: String
+}
+
+input ContentChangeInput {
+  index: Float!
+  text: String!
 }
 
 input UpdateDashboardConfigInput {
@@ -292,6 +321,7 @@ enum EWidgetType {
   CONSOLE
   LOGS
   CONTROLS
+  CODE_EDITOR
 }
 
 input UpdateControlsWidgetInput {

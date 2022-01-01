@@ -11,8 +11,8 @@ export type ICurrentDashboardConfigResponse = IExecutionResult<ICurrentDashboard
 // Exporting query
 export const CurrentDashboardConfig = (...widgets) => {
   return gql`
-    query CurrentDashboardConfig($resourceId: String!, $resourceType: EDashboardType!) {
-      CurrentDashboard(resourceId: $resourceId, resourceType: $resourceType) {
+    query CurrentDashboardConfig($resourceId: String!, $dashboardType: EDashboardType!) {
+      CurrentDashboard(resourceId: $resourceId, dashboardType: $dashboardType) {
         _id
         name
         widgets {

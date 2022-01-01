@@ -1,0 +1,8 @@
+export enum EResourceType {
+  PROJECT = 'PROJECT',
+
+  RAW_PLUGIN = 'RAW_PLUGIN',
+  VISUAL_PLUGIN = 'VISUAL_PLUGIN',
+
+  NODE_PLUGIN = 'NODE_PLUGIN',
+}

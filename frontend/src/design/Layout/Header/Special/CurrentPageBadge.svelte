@@ -8,6 +8,9 @@
   import { Pages, Categories } from 'src/config';
   import { onMount, onDestroy } from 'svelte';
 
+  // Importing needed stores
+  import { CurrentProject } from 'src/stores/project';
+
   // Variables
   let popoverVisible: boolean = false;
 
@@ -15,6 +18,8 @@
   // to page.url.
   function redirect(redirectUrl: string) {
     let url: string;
+    console.log($CurrentProject);
+    console.log($page);
     eval(`url = \`${redirectUrl}\``);
     goto(url);
   };
@@ -84,8 +89,8 @@
 </script>
 
 <!-- Current Page Badge Layout -->
-<div class="mx-4 relative">
-  <button id="currentPageBadge-button" on:click={() => popoverSwitch()} class="px-4 w-48 py-2 border-2 border-black flex items-center justify-center">
+<div class="mx-2 relative">
+  <button id="currentPageBadge-button" on:click={() => popoverSwitch()} class="px-4 w-48 h-full py-2 border-2 border-black flex items-center justify-center">
     <p class="text-sm text-black mr-2">{ currentPage?.title ?? 'Неизвестно' }</p>
 
     <SimpleIcon name="{ popoverVisible ? 'chevron-up' : 'chevron-down' }" attrs={{ class: "w-4 h-4 text-black", "stroke-width": "2.5" }} />

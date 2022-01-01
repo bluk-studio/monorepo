@@ -1,2 +1,1 @@
-export * from './IPlugin.interface';
-export * from './nodes';
+export * from './IProjectPlugin.interface';

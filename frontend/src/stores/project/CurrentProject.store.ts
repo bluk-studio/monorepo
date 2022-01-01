@@ -37,7 +37,12 @@ function _initialize() {
 
     // Function, that'll clear our CurrentProject store
     async clear() {
-      updateProject({});
+      update((object) => {
+        object.loaded = false;
+        object.project = {};
+
+        return object;
+      });
     },
 
     // Function, that'll fetch information about

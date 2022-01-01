@@ -14,9 +14,6 @@ export class DashboardConfig implements Omit<IDashboardConfig, '_id'> {
   @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ type: Types.ObjectId, required: true })
-  rid: Types.ObjectId;
-
   @Prop({ type: Types.ObjectId, ref: 'Profile', required: true })
   uid: Types.ObjectId;
 

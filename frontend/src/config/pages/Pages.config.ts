@@ -113,7 +113,7 @@ export const Pages: Array<IPage> = [
 
   // Dashboard
   {
-    url: '/app/${ $page.params.projectId }/dashboard',
+    url: '/app/${ $page.params.projectId ?? $CurrentProject.project._id }/dashboard',
     regex: /\/app\/[\s\S]{24}\/dashboard/,
     checkName: 'currentProject',
     category: 'project',
@@ -127,7 +127,7 @@ export const Pages: Array<IPage> = [
 
   // Editor
   {
-    url: '/app/${ $page.params.projectId }/editor',
+    url: '/app/${ $page.params.projectId ?? $CurrentProject.project._id }/editor',
     regex: /\/app\/[\s\S]{24}\/editor\/[\s\S]+/,
     checkName: 'currentProject',
     category: 'project',
@@ -141,7 +141,7 @@ export const Pages: Array<IPage> = [
 
   // Worlds
   {
-    url: '/app/${ $page.params.projectId }/worlds',
+    url: '/app/${ $page.params.projectId ?? $CurrentProject.project._id }/worlds',
     regex: /\/app\/[\s\S]{24}\/worlds/,
     checkName: 'currentProject',
     category: 'project',
@@ -155,7 +155,7 @@ export const Pages: Array<IPage> = [
 
   // Settings
   {
-    url: '/app/${ $page.params.projectId }/settings',
+    url: '/app/${ $page.params.projectId ?? $CurrentProject.project._id }/settings',
     regex: /\/app\/[\s\S]{24}\/settings\/[\s\S]+/,
     checkName: 'currentProject',
     category: 'project',

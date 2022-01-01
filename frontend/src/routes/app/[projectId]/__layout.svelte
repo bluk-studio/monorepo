@@ -22,13 +22,14 @@
     });
   });
 
-  page.subscribe((object) => {
-    const regexp = /\/app\/[\s\S]{24}\/[\s\S]+/;
-
-    if (!regexp.test(object.path)) {
-      CurrentProject.clear();
-    };
-  });
+  // meh
+  // page.subscribe((object) => {
+  //   const regexp = /\/app\/[\s\S]{24}\/[\s\S]+/;
+  // 
+  //   if (!regexp.test(object.path)) {
+  //     CurrentProject.clear();
+  //   };
+  // });
 
   $: loaded = $CurrentProject.loaded
 </script>

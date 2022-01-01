@@ -1,0 +1,10 @@
+export enum EActionEventType {
+  // > Editor
+
+  // > > Collaboration
+  INSERT_CONTENT = 'INSERT_CONTENT',
+  REPLACE_CONTENT = 'REPLACE_CONTENT',
+  DELETE_CONTENT = 'DELETE_CONTENT',
+
+  PING_COLLABORATOR = 'PING_COLLABORATOR',
+};

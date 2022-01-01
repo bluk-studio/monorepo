@@ -4,7 +4,7 @@
 </script>
 
 <!-- Header -->
-<div class="w-full border-b-2 border-gray-300 py-2 px-4 flex items-center justify-between">
+<div on:pointerdown class="cursor-pointer w-full border-b-2 border-gray-300 py-2 px-4 flex items-center justify-between">
   <h1 class="text-md text-black font-medium">Консоль</h1>
 
   <div class="flex items-center">

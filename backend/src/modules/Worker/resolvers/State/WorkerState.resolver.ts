@@ -99,7 +99,6 @@ export class WorkerStateResolver {
       project,
 
       // +todo fetch plugins
-      plugins: [],
     }
   };
 };

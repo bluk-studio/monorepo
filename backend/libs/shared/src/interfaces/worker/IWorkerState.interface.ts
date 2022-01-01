@@ -1,5 +1,5 @@
 import { EWorkerState } from "@app/shared";
-import { IProject, IPlugin } from "../project";
+import { IProject } from "../project";
 import { IWorkerRegion } from "./region";
 
 // Exporting IWorkerState interface
@@ -12,5 +12,4 @@ export interface IWorkerState {
 
   // "Interesting" information
   project: IProject,
-  plugins: IPlugin[],
 };

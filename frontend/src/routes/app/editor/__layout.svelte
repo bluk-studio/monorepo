@@ -1,14 +1,15 @@
 <script lang="ts">
   // Importing modules
-  import type { EDashboardType } from '@app/shared';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
 
-  import { RadialSpinner, SimpleIcon } from 'src/design';
+  import { RadialSpinner } from 'src/design';
   
   import { CurrentProject } from 'src/stores/project';
   import { EditorStore } from 'src/modules/Editor';
+  import type { EResourceType } from '@app/shared';
+
+  import { CurrentRawPluginStore } from 'src/modules/Plugins';
 
   // Variables
   let loading = true;
@@ -20,13 +21,12 @@
       const projectId = $page.query.get('projectId');
 
       if (projectId) {
-        console.log('fetching project');
         CurrentProject.fetch(projectId);
       };
       
       // Trying to fetch resourceId and resourceType from page information
       const resourceId = $page.query.get('resourceId');
-      const resourceType = $page.query.get('resourceType') as EDashboardType;
+      const resourceType = $page.query.get('resourceType') as EResourceType;
 
       if (resourceId && resourceType) {
         // Updating store
@@ -34,6 +34,12 @@
       };
 
       loading = false;
+
+      // Fetching information
+      if (resourceType == 'RAW_PLUGIN') {
+        // Fetching CurrentRawPlugin
+        CurrentRawPluginStore.fetch();
+      };
     };
   });
 </script>

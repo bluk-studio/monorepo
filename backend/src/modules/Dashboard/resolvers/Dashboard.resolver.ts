@@ -31,18 +31,17 @@ export class DashboardResolver {
     return await this.service.fetchById(dashboardId);
   };
 
-  // query DashboardByProfileInResource
+  // query DashboardsByType
   @UseGuards(UserAuthGuard)
   @Query(returns => [DashboardConfigObject], {
-    name: 'DashboardByProfileInResource',
+    name: 'DashboardsByType',
   })
-  public async queryDashboardByProfileInResource(
+  public async queryDashboardsByType(
     @Context('user') profile: Profile,
 
-    @Args({ name: 'type', type: () => EDashboardType }) resourceType: EDashboardType,
-    @Args('id') resourceId: string,
+    @Args({ name: 'type', type: () => EDashboardType }) dashboardType: EDashboardType,
   ): Promise<DashboardConfig[]> {
-    return await this.service.fetchByProfileInResource(resourceType, profile._id, resourceId);
+    return await this.service.fetchByType(dashboardType, profile._id);
   };
 
   // mutation CreateDashboard
@@ -53,12 +52,11 @@ export class DashboardResolver {
   public async createDashboard(
     @Args('input') input: CreateProjectInput,
 
-    @Args({ name: 'resourceType', type: () => EDashboardType }) resourceType: EDashboardType,
-    @Args('resourceId') resourceId: string,
-
+    @Args({ name: 'dashboardType', type: () => EDashboardType }) dashboardType: EDashboardType,
+ 
     @Context('user') profile: Profile,  
   ): Promise<DashboardConfig> {
-    return await this.service.create(input, resourceType, profile._id, resourceId);
+    return await this.service.create(input, dashboardType, profile._id);
   };
 
   // mutation UpdateDashboard
@@ -94,12 +92,12 @@ export class DashboardResolver {
     @Context('user') profile: Profile,
     @Context('req') req: IRequest,
 
-    @Args({ name: 'resourceType', type: () => EDashboardType }) resourceType: EDashboardType,
-    @Args('resourceId') resourceId: string,
+    @Args({ name: 'dashboardType', type: () => EDashboardType }) dashboardType: EDashboardType,
+    @Args({ name: 'resourceId' }) resourceId: string,
   ): Promise<DashboardConfig> {
     // Getting information from session object
     const resources = req.session.resources ?? [];
-    const resource = resources.find((resource) => resource._id == resourceId && resource.dashboard?.type == resourceType);
+    const resource = resources.find((resource) => resource._id == resourceId && resource.dashboard?.type == dashboardType);
   
     if (resource && resource.dashboard?.activeId) {
       const dashboard = await this.service.fetchById(resource.dashboard.activeId);
@@ -115,14 +113,14 @@ export class DashboardResolver {
       };
     } else {
       // Getting all dashboards
-      const dashboards = await this.service.fetchByProfileInResource(resourceType, profile._id, resourceId);
+      const dashboards = await this.service.fetchByType(dashboardType, profile._id);
       const currentDashboard = dashboards[0];
 
       // Updating session
       const newResourceConfig: ISessionResource = {
         _id: resourceId,
         dashboard: {
-          type: resourceType,
+          type: dashboardType,
           activeId: currentDashboard._id,
         },
       };
@@ -148,7 +146,6 @@ export class DashboardResolver {
     @Args('resourceId') resourceId: string,
     @Args('dashboardId') dashboardId: string,
 
-    @Context('user') profile: Profile,
     @Context('req') req: IRequest,
   ): Promise<DashboardConfig> {
     const resources = req.session.resources ?? [];

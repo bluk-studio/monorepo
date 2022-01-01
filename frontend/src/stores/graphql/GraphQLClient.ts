@@ -17,10 +17,6 @@ const httpLink = new HttpLink({
   credentials: 'include',
 });
 
-console.log("IS BROWSER:");
-console.log(isBrowser);
-console.log("================================");
-
 // WebSocket Link
 const wsLink = isBrowser ? new WebSocketLink({
   uri: 'ws://localhost:3001/graphql',
@@ -43,6 +39,18 @@ const splitLink = isBrowser ? split(
 
 // Client itself
 export const client = SvelteApolloClient({
-  link: splitLink ?? httpLink,
-  cache: new InMemoryCache()
+  link: httpLink,
+  cache: new InMemoryCache(),
 });
+
+// +todo
+
+export const editorPingClient = SvelteApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+});
+
+export const subscriptionClient = SvelteApolloClient({
+  link: wsLink,
+  cache: new InMemoryCache(),
+})

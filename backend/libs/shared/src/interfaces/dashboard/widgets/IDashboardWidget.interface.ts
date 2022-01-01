@@ -1,3 +1,11 @@
-import { IConsoleWidget, IControlsWidget, ILogsWidget, IPlayersWidget } from ".";
+import { IConsoleWidget, IControlsWidget, ILogsWidget, IPlayersWidget, ICodeEditorWidget } from ".";
 
-export type IDashboardWidget = IConsoleWidget | IControlsWidget | ILogsWidget | IPlayersWidget;
+export type IDashboardWidget = 
+  // Project widgets
+  | IConsoleWidget 
+  | IControlsWidget 
+  | ILogsWidget 
+  | IPlayersWidget
+
+  // CodeEditor widgets
+  | ICodeEditorWidget

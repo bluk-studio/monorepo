@@ -1,4 +1,4 @@
-import { IProject } from '@app/shared';
+import { IProject, IProjectPlugin } from '@app/shared';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { ProjectMember, ProjectMemberObject, ProjectSettingsObject } from 'src/types';
 import { Types } from 'mongoose';
@@ -25,4 +25,7 @@ export class ProjectObject implements IProject {
     description: "Project's members array",
   })
   members: Array<ProjectMember>;
+
+  // +todo
+  plugins: Array<IProjectPlugin>;
 }

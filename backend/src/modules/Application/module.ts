@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import * as GlobalModules from 'src/bootstrap/GlobalModules.array';
 
@@ -10,6 +11,9 @@ import 'src/types/enums';
 
 @Module({
   imports: [
+    // EventEmitter
+    EventEmitterModule.forRoot(),
+
     // ConfigModule
     ConfigModule.forRoot(),
 

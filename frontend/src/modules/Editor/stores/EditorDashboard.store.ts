@@ -1,5 +1,5 @@
-import type { IDashboardWidget } from '@app/shared';
-import { CurrentDashboardConfig, ICurrentDashboardConfigData, ICurrentDashboardConfigResponse, IUpdateDashboardResponse, UpdateDashboard } from 'src/queries';
+import type { EDashboardType, IDashboardWidget, EResourceType } from '@app/shared';
+import { AllCodeEditorWidgets, CurrentDashboardConfig, ICurrentDashboardConfigData, ICurrentDashboardConfigResponse, IUpdateDashboardResponse, UpdateDashboard } from 'src/queries';
 import { writable } from 'svelte/store';
 import { EditorStore, IEditorStore } from '.';
 import { client } from 'src/stores/graphql';
@@ -35,12 +35,31 @@ function _initialize() {
     // +todo error handling
     if (!editor.resourceType || !editor.resourceId) return;
     
+    // Determining dashboardType
+    let dashboardType: EDashboardType;
+    switch (editor.resourceType) {
+      case 'RAW_PLUGIN' || 'NODE_PLUGIN':
+        dashboardType = 'CODE_EDITOR' as EDashboardType;
+        break;
+
+      case 'VISUAL_PLUGIN':
+        dashboardType = 'VISUAL_EDITOR' as EDashboardType;
+        break;
+
+      case 'PROJECT':
+        dashboardType = 'PROJECT' as EDashboardType;
+        break;
+    };
+
     // Fetching dashboard
     return new Promise((resolve, reject) => {
-      const query = client.query<ICurrentDashboardConfigData>(CurrentDashboardConfig(), {
+      const query = client.query<ICurrentDashboardConfigData>(CurrentDashboardConfig(
+        // CodeEditor widgets
+        AllCodeEditorWidgets,
+      ), {
         variables: {
           resourceId: editor.resourceId,
-          resourceType: editor.resourceType,
+          resourceType: dashboardType,
         },
       });
 

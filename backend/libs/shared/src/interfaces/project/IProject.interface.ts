@@ -1,6 +1,7 @@
 import { IProjectMember } from './members';
 import { Types } from 'mongoose';
 import { IServerSettings } from './settings';
+import { IProjectPlugin } from '.';
 
 // Exporting IProject interface
 export interface IProject {

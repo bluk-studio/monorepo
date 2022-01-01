@@ -1,4 +1,4 @@
-import { IProject, IServerSettings } from '@app/shared';
+import { EPluginType, IProject, IProjectPlugin, IServerSettings } from '@app/shared';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ProjectSettings, ProjectSettingsSchema } from '.';
@@ -6,6 +6,7 @@ import { ProjectMember } from '.';
 
 export type ProjectDocument = Document & Project;
 
+// Project schema
 @Schema()
 export class Project implements IProject {
   _id: Types.ObjectId;

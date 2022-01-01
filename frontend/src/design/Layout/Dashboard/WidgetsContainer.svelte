@@ -1,39 +1,20 @@
 <script lang="ts">
   // Importing modules
-  import { ConsoleTile, PlayersTile, ControlsTile } from './Widgets';
   import { SimpleIcon } from 'src/design';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { fade } from 'svelte/transition';
+  import RadialSpinner from 'src/design/Loaders/RadialSpinner.svelte';
 
   import Grid from "svelte-grid";
   import GridHelp from "svelte-grid/build/helper/index.mjs";
-  import RadialSpinner from 'src/design/Loaders/RadialSpinner.svelte';
-  import type { EDashboardType, IDashboardWidget } from '@app/shared';
-
-  // Importing possible Dashboard stores
-  // +todo dynamic import?
-  import { EditorDashboardStore, EditorStore } from 'src/modules/Editor';
-  import { ProjectDashboard, CurrentProject } from 'src/stores';
-import { onMount } from 'svelte';
+  
+  import { CurrentDashboardStore } from 'src/modules/Dashboards';
+  import { ConsoleTile, PlayersTile, ControlsTile, CodeEditorTile } from './Widgets';
 
   // Variables
   let loading = true;
   let gridItems = [];
-
-  // Exporting variables
-  export let type: EDashboardType;
-  const store = () => {
-    switch (type) {
-      case 'CODE_EDITOR' as EDashboardType || 'VISUAL_EDITOR' as EDashboardType:
-        return EditorDashboardStore;
-    
-      case 'PROJECT' as EDashboardType:
-        return ProjectDashboard;
-
-      default:
-        break;
-    }
-  };
 
   const COLS = 6;
 
@@ -64,65 +45,69 @@ import { onMount } from 'svelte';
     });
 
     // Updating
-    await store().update(serialized);
+    await CurrentDashboardStore.update(serialized);
   };
 
-  // Determining to which store we need
-  // to subscribe (either CurrentProject or EditorStore)
-  const unsubscribe = (type == 'PROJECT' as EDashboardType ? CurrentProject :EditorStore).subscribe(async (editor) => {
-    // Fetching Dashboard information
-    await store().fetch();
 
-    const fetchedWidgets: IDashboardWidget[] = await new Promise((resolve) => {
-      store().subscribe((store) => {
-        if (store.dashboardId && store.widgets) {
-          resolve(store.widgets);
+  CurrentDashboardStore.subscribe((store) => {
+    if (store.widgets == null) return;
+    
+    // Processing
+    const widgets = store.widgets
+      .filter((widget) => widget.enabled == true).map((widget) => {
+        // Generating GridItem for this widget
+        return {
+          [COLS]: GridHelp.item({ 
+            x: widget.x,
+            y: widget.y,
+            w: widget.width,
+            h: widget.height,
+            customDragger: true,
+          }),
+          id: makeid(4),
+          type: widget.type,
         };
       });
-    });
 
-    const widgets = fetchedWidgets.filter((widget) => widget.enabled).map((widget) => {
-      return {
-        [COLS]: GridHelp.item({ x: widget.x, y: widget.y, w: widget.width, h: widget.height }),
-        id: makeid(4),
-        type: widget.type,
-      };
-    });
-
-    if (fetchedWidgets.filter((widget) => widget.x == 0 && widget.y == 0).length == fetchedWidgets.length) {
+    // Checking if we need to adjust this widgets or no.
+    if (store.widgets.filter((widget) => widget.enabled && widget.x == 0 && widget.y == 0).length == store.widgets.length) {
+      // Adjusting
       gridItems = GridHelp.adjust(widgets, COLS);
 
+      // Synchronizing
       syncWidgets();
     } else {
       gridItems = widgets;
     };
 
+    // Updating loading state
     loading = false;
-
-    // Unsubscribing
-    unsubscribe();
   });
 </script>
 
 <section class="w-full h-full relative mb-8">
-  { #if loading }
-    <div class="w-full h-full flex justify-center items-center">
+  { #if loading || $CurrentDashboardStore.updating }
+    <div transition:fade class="w-full h-full flex justify-center items-center">
       <RadialSpinner color="#000" size={15} />
     </div>
   { :else }
     { #if gridItems.length > 0 }
       <!-- Tiles -->
-      <Grid on:pointerup={syncWidgets} bind:items={gridItems} rowHeight={100} let:item let:dataItem cols={[[,6]]} fillSpace={true}>
-        <div class="w-full h-full bg-gray-200 rounded-sm">
+      <Grid on:pointerup={syncWidgets} bind:items={gridItems} rowHeight={100} let:item let:dataItem cols={[[,6]]} fillSpace={true} let:movePointerDown>
+        <div class="w-full h-full bg-gray-100 rounded-sm relative">
           <!-- Players widget -->
           { #if dataItem.type == 'PLAYERS' }
-            <PlayersTile />
+            <PlayersTile on:pointerdown={movePointerDown} />
           <!-- Controls widget -->
           { :else if dataItem.type == 'CONTROLS' }
-            <ControlsTile />
+            <ControlsTile on:pointerdown={movePointerDown} /> 
           <!-- Console widget -->
           { :else if dataItem.type == 'CONSOLE' }
-            <ConsoleTile />
+            <ConsoleTile on:pointerdown={movePointerDown} />
+
+          <!-- CodeEditor widget -->
+          { :else if dataItem.type == 'CODE_EDITOR' }
+            <CodeEditorTile on:pointerdown={movePointerDown} />
           { /if }
         </div>
       </Grid>

@@ -47,12 +47,12 @@ const DEFAULTS: Record<EDashboardType, IDashboardWidget[]> = {
   // Default widgets for CODE_EDITOR
   [EDashboardType.CODE_EDITOR]: [
     {
-      type: EWidgetType.PLAYERS,
+      type: EWidgetType.CODE_EDITOR,
       enabled: true,
       x: 0,
       y: 0,
-      width: 2,
-      height: 3,
+      width: 6,
+      height: 6,
     },
   ],
 
@@ -86,41 +86,28 @@ export class DashboardConfigService {
   // public fetchByProfile
   // +todo
 
-  // public fetchByProfileInResource
-  public async fetchByProfileInResource(
-    resourceType: EDashboardType,
-
-    // Ids
+  // public fetchByType
+  public async fetchByType(
+    dashboardType: EDashboardType,
     profileId: string | Types.ObjectId,
-    resourceId: string | Types.ObjectId,
 
     // Options
     doCreateDefault = true,
   ): Promise<DashboardConfigDocument[]> {
-    // Converting string to ObjectId type
+    // Converting profileId to ObjectId type
     const _profileId =
       profileId instanceof Types.ObjectId
         ? profileId
         : new Types.ObjectId(profileId);
 
-    const _resourceId =
-      resourceId instanceof Types.ObjectId
-        ? resourceId
-        : new Types.ObjectId(resourceId);
-
     // Fetching configs
-    const configs: DashboardConfigDocument[] = await this.dashboardConfig.find({ type: resourceType, uid: _profileId, rid: _resourceId });
+    const configs: DashboardConfigDocument[] = await this.dashboardConfig.find({ type: dashboardType, uid: _profileId });
 
-    if (configs.length <= 0) {
-      // Creating default DashboardConfig if needed
+    if (configs.length < 0) {
+      // Creating default DashboarcConfig for this DashboardType (if needed)
       if (doCreateDefault) {
-        const profile = await this.profileService.fetchById(_profileId);
-        if (!profile) throw new HttpException(`Profile not found`, HttpStatus.NOT_FOUND);
-
-        const defaultConfig = await this.create({ name: `${profile.username ?? profile.email} default dashboard config` }, resourceType, _profileId, _resourceId);
+        const defaultConfig = await this.create({ name: `Default dashboard` }, dashboardType, profileId);
         configs.push(defaultConfig);
-      } else {
-        throw new HttpException('No DashboardConfigs found', HttpStatus.NOT_FOUND);
       };
     };
 
@@ -132,10 +119,9 @@ export class DashboardConfigService {
   // public create
   public async create(
     input: CreateDashboardConfigInput,
-    resourceType: EDashboardType,
+    dashboardType: EDashboardType,
     
     profileId: string | Types.ObjectId,
-    resourceId: string | Types.ObjectId,
   ) {
     // Converting ids to ObjectId type
     const _profileId =
@@ -143,22 +129,16 @@ export class DashboardConfigService {
         ? profileId
         : new Types.ObjectId(profileId);
 
-    const _resourceId =
-      resourceId instanceof Types.ObjectId
-        ? resourceId
-        : new Types.ObjectId(resourceId); 
-
     // Fetching profile
     const profile = await this.profileService.fetchById(_profileId);
     if (!profile) throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
 
-    const widgets: Array<IDashboardWidget> = DEFAULTS[resourceType];
+    const widgets: Array<IDashboardWidget> = DEFAULTS[dashboardType];
 
     // Creating new dashboard configuration
     const dashboardConfig = new this.dashboardConfig({
       name: input.name,
-      type: resourceType,
-      rid: _resourceId,
+      type: dashboardType,
       uid: _profileId,
       widgets: widgets,
     });

@@ -1,10 +1,10 @@
 import { EWidgetType } from "@app/shared";
 import { createUnionType } from "@nestjs/graphql";
-import { ConsoleWidgetObject, ControlsWidgetObject, LogsWidgetObject, PlayersWidgetObject } from "src/types/objects";
+import { ConsoleWidgetObject, ControlsWidgetObject, LogsWidgetObject, PlayersWidgetObject, CodeEditorWidgetObject } from "src/types/objects";
 
 export const DashboardWidgetUnion = createUnionType({
   name: 'DashboardWidget',
-  types: () => [ControlsWidgetObject, ConsoleWidgetObject, PlayersWidgetObject, LogsWidgetObject],
+  types: () => [ControlsWidgetObject, ConsoleWidgetObject, PlayersWidgetObject, LogsWidgetObject, CodeEditorWidgetObject],
   
   // resolver
   resolveType: (value) => {
@@ -26,6 +26,11 @@ export const DashboardWidgetUnion = createUnionType({
     // Logs Widget
     if (value.type == EWidgetType.LOGS) {
       return LogsWidgetObject;
+    };
+
+    // CodeEditor Widget
+    if (value.type == EWidgetType.CODE_EDITOR) {
+      return CodeEditorWidgetObject;
     };
   },
 });

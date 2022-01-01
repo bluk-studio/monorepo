@@ -15,9 +15,6 @@ export class DashboardConfigObject implements Omit<IDashboardConfig, 'rid' | 'ui
   @Field((type) => String, { nullable: false, description: "Display name of DashboardConfig" })
   name: string;
 
-  @Field((type) => ProjectObject, { nullable: false, description: "Project instance of this DashboardConfig (type: PROJECT)" })
-  project?: ProjectObject;
-
   @Field((type) => ProfileObject, { nullable: false, description: "Profile instance, that's assosiated with this DashboardConfig" })
   profile: ProfileObject;
 

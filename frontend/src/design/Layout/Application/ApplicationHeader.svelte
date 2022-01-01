@@ -2,6 +2,7 @@
   // Importing modules
   import SimpleIcon from "src/design/Icon/SimpleIcon.svelte";
   import CurrentPageBadge from "src/design/Layout/Header/Special/CurrentPageBadge.svelte";
+  import CurrentProjectBadge from "src/design/Layout/Header/Special/CurrentProjectBadge.svelte";
   
   import { CurrentProfile, CurrentProject } from "src/stores";
   import { fade } from 'svelte/transition';
@@ -13,22 +14,12 @@
   <!-- Left Panel -->
   <div class="flex items-stretch">
     <!-- Logotype -->
-    <div class="flex items-center">
+    <div class="flex items-center mr-4">
       <img src="https://res.cloudinary.com/lococovu-cdn/image/upload/v1636810372/bluk-studio-black.svg" alt="bluk.studio white logotype" class="w-8 h-8">
     </div>
 
-    { #if $CurrentProject.loaded && $CurrentProject.project?._id != null }
-      <!-- Current project button -->
-      <button transition:fade class="ml-6 px-4 py-2 bg-black rounded-sm flex items-center justify-center">
-        <!-- Project name -->
-        <h1 class="text-white text-sm mr-2">{ $CurrentProject.project?.name }</h1>
-
-        <!-- Settings -->
-        <div class="flex items-center">
-          <SimpleIcon name="chevron-down" attrs={{ class: "w-4 h-4 text-white", "stroke-width": "2.5" }} />
-        </div>
-      </button>
-    { /if }
+    <!-- CurrentProject -->
+    <CurrentProjectBadge />
 
     <!-- Current page -->
     <CurrentPageBadge />

@@ -6,3 +6,5 @@ export * from './project';
 export * from './worker';
 export * from './tunnel';
 export * from './plugins';
+export * from './editor';
+export * from './SessionConnection';
